@@ -1,0 +1,30 @@
+public async Task NewUser()
+    {
+        //NEED VALIDATION STEPS HERE FIRST!!!
+ 
+        sesn = new GSession();
+        user = new MUser();
+        sesn.GSessionID = sesn.TimeStamp() + uNewName;
+        user.uID = user.TimeStamp() + uNewName;
+        user.uEmail = uNewEmail;
+        user.uPwd = uNewPWD;
+        sesn.usr = user;
+ 
+        u001_000_001 userRec = new u001_000_001();
+        userRec.uID = user.uID;
+        userRec.uEmail = user.uEmail;
+        userRec.uPwd = user.uPwd;
+        userRec.uPin = "n";
+        userRec.uType = "n";
+        userRec.uProf = "n";
+        userRec.uTribe = "n";
+        userRec.uFollow = "n";
+        userRec.uPrefs = "n";
+        userRec.uTProg = "n";
+ 
+        Http = new HttpClient();
+        Uri baseAddress = new Uri("http://localhost:24594");
+        Http.BaseAddress = baseAddress;
+        var msg = await Http.PostAsJsonAsync<u001_000_001>("/Controllers/u001_000_001Controller", userRec, System.Threading.CancellationToken.None);
+        if (msg.IsSuccessStatusCode) ClearUserScr();
+    }
