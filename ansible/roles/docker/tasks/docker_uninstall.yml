@@ -1,0 +1,32 @@
+---
+
+- name: Docker Uninstall
+  hosts: [group]
+  gather_facts: no
+  become: yes
+  tasks:
+    # uninstall docker components
+    - name: Play-01 Uninstall Docker Package Components
+      shell: |
+        apt-get purge docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
+      register: docker_play_01_status
+    # remove docker library
+    - name: Play-02 Purge Docker Library
+      shell: |
+        rm -rf /var/lib/docker
+      register: docker_play_02_status
+    # remove containerd library
+    - name: Play-03 Purge Containerd Library
+      shell: |
+        rm -rf /var/lib/containerd
+      register: docker_play_03_status
+    # remove docker source list
+    - name: Play-04 Purge Docker Source List
+      shell: |
+        rm /etc/apt/sources.list.d/docker.list
+      register: docker_play_04_status
+    # remove docker keyrings
+    - name: Play-05 Purge Docker Keyrings
+      shell: |
+        rm /etc/apt/keyrings/docker.asc
+      register: docker_play_05_status

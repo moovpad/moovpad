@@ -1,0 +1,65 @@
+---
+
+- name: ClamAV Install
+  hosts: 192.168.20.129
+  gather_facts: no
+  become: yes
+  tasks:
+    # install packages
+    - name: Play-01 Install ClamAV and Daemon
+      shell: |
+        apt install clamav clamav-daemon -y
+      register: clamav_play_01_status
+    
+    # install packages
+    - name: Play-02 Create Milter Config File
+      #check this especially, since instructions state navigating into /etc/clamav, not putting the directory into the command
+      shell: |
+        clamconf -g clamav-milter.conf > /etc/clamav/clamav-milter.conf 
+      register: clamav_play_02_status
+    
+    # stop clamav-freshclam service
+    - name: Play-03 Stop Clamav-Freshclam Service
+      shell: |
+        systemctl stop clamav-freshclam.service
+      register: clamav_play_03_status
+
+    # stop clamav-daemon service
+    - name: Play-04 Stop Clamav-Daemon Service
+      shell: |
+        systemctl stop clamav-daemon.service
+      register: clamav_play_04_status
+    
+    # start clamav-daemon service
+    - name: Play-05 Start Clamav-Daemon Service
+      shell: |
+        systemctl start clamav-daemon.service
+      register: clamav_play_05_status
+    
+    # run freshclam
+    - name: Play-06 Update Clamav database
+      shell: |
+        freshclam
+      register: clamav_play_06_status
+    
+    ##################################################################################################################
+    # copy log file for scans
+    - name: Play-07 Copy Log file
+      ansible.builtin.copy:
+        src: /home/emh/ansible/clamav/files/freshclam.log
+        dest: /var/log/freshclam.log
+        owner: clamav
+        group: clamav
+        mode: '600'
+      register: clamav_play_07_status
+    ##################################################################################################################
+
+    # configure log file pointer
+    - name: Play-08 Set Maximum Size of Log File
+    # check file path is right
+      shell: |
+        sed -i "s/^UpdateLogFile.*/UpdateLogFile \/var\/log\/freshclam.log/" /etc/clamav/freshclam.conf
+      register: auditd_play_08_status
+      #the normal sed command format didn't work because of the '/' for the filename, so had to prefix each '/' with a '\'
+      #resource: https://superuser.com/questions/1733693/how-to-find-and-replace-string-include-special-character-with-sed-command
+    ##################################################################################################################

@@ -1,0 +1,61 @@
+---
+
+- name: Initial Configuration
+  hosts: 192.168.20.129
+  gather_facts: no
+  become: yes
+  tasks:
+    # set timezone
+    - name: Play-01 Set Local Timezone
+      shell: |
+        timedatectl set-timezone Australia/Sydney
+      register: config_play_01_status
+    # configure public DNS resolver
+    - name: Play-02 Configure Public DNS Resolver
+      shell: |
+        sed -i "s/^nameserver.*/nameserver 1.1.1.1/" /run/systemd/resolve/stub-resolv.conf
+      register: config_play_02_status
+    # initial update and upgrade of current base installation
+    - name: Play-03 Update & Upgrade
+      shell: |
+        apt-get update && apt-get upgrade -y
+      register: config_play_03_status
+    # install tree command to view directory trees
+    - name: Play-04 Install Tree command
+      shell: |
+        apt-get install tree -y
+      register: config_play_04_status
+    # install finger command to view new users
+    - name: Play-05 Install Finger command
+      shell: |
+        apt-get install finger -y
+      register: config_play_05_status
+    # install acl command for acceess control list
+    - name: Play-06 Install ACL command
+      shell: |
+        apt-get install acl -y
+      register: config_play_06_status
+    # install htop command for system monitoring
+    - name: Play-07 Install Htop command
+      shell: |
+        apt-get install htop -y
+      register: config_play_07_status
+    # install net-tools for network checks
+    - name: Play-08 Install Net-Tools command
+      shell: |
+        apt-get install net-tools -y
+      register: config_play_08_status
+    # install and start openssh-server 
+#    - name: Play-09 Install OpenSSH-Server
+#      service:
+#        name: openssh-server
+#        state: running
+#        enabled: true
+#      register: config_play_09_status
+    # install coud-init
+    - name: Play-09 Install Cloud-Init
+      package: 
+        name: cloud-init 
+        state: present
+      register: config_play_09_status
+

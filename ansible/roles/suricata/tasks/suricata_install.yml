@@ -1,0 +1,45 @@
+---
+
+- name: Suricata Install
+  hosts: 192.168.20.129
+  gather_facts: no
+  become: yes
+  tasks:
+    # get software-properties-common
+    - name: Play-01 Get Software_Properties-Common
+      shell: |
+        apt-get install software-properties-common
+      register: suricata_play_01_status
+    # get ppa
+    - name: Play-02 Get Repository PPA
+      shell: |
+        add-apt-repository ppa:oisf/suricata-stable
+      register: suricata_play_02_status
+    # update apt repository
+    - name: Play-03 Update Local Apt Repository
+      shell: |
+        apt update -y
+      register: suricata_play_03_status
+    # install suricata
+    - name: Play-04 Install Suricata
+      shell: |
+        apt install suricata jq -y 
+      register: suricata_play_04_status
+    # update signatures
+    - name: Play-05 Update Signatures
+      shell: |
+        suricata-update
+      register: suricata_play_05_status
+    # note: this only uses the default ET open ruleset
+    # restart service
+    - name: Play-06 Restart Suricata Service
+      shell: |
+        systemctl restart suricata
+      register: suricata_play_06_status
+
+
+##
+## JSON OUTPUT
+##
+#Suricata output can also be formatted as json file, which may help with RServer:
+#https://docs.suricata.io/en/latest/output/eve/eve-json-output.html#eve-json-output

@@ -1,0 +1,43 @@
+---
+
+- name: Auditd Install
+  hosts: 192.168.20.129
+  #above ip is used for initial testing vm only - local run
+  gather_facts: no
+  become: yes
+  tasks:
+    # install packages
+    - name: Play-01 Install Auditd and Plugins
+      shell: |
+        apt-get install auditd audispd-plugins -y
+      register: auditd_play_01_status
+    # configure log file
+    - name: Play-02 Set Config Log File
+      shell: |
+        sed -i "s/^log_file.*/log_file = \/var\/log\/audit\/audit.log/" /etc/audit/auditd.conf
+      register: auditd_play_02_status
+    # configure log file size
+    - name: Play-03 Set Maximum Size of Log File
+      shell: |
+        sed -i "s/^max_log_file.*/max_log_file = 8/" /var/log/audit/audit.log
+      register: auditd_play_03_status
+    # configure number of log files
+    - name: Play-04 Set Number of Logs Files
+      shell: |
+        sed -i "s/^num_logs.*/num_logs = 5/" /var/log/audit/audit.log
+      register: auditd_play_04_status
+    # configure name in log file
+    - name: Play-05 Set Name in Log Files
+      shell: |
+        sed -i "s/^name_format.*/name_format = HOSTNAME/" /var/log/audit/audit.log
+      register: auditd_play_05_status
+    # configure log file action
+    - name: Play-06 Set Log File Rotation
+      shell: |
+        sed -i "s/^max_log_file_action.*/max_log_file_action = ROTATE/" /var/log/audit/audit.log
+      register: auditd_play_06_status
+    # restart auditd
+    - name: Play-07 Restart Auditd
+      shell: |
+        systemctl restart auditd
+      register: auditd_play_07_status

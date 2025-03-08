@@ -1,0 +1,32 @@
+---
+
+- name: OpenVAS Install
+  hosts: 192.168.20.129
+  gather_facts: no
+  become: yes
+  tasks:
+    # install openvas cli tool
+    - name: Play-01 Install OpenVAS CLI Tool
+      shell: |
+        apt install openscap-scanner openscap-utils bzip2 -y
+      register: openvas_play_01_status
+    # install oval from canonical
+    - name: Play-02 Install OVAL Content From Canonical
+      shell: |
+        wget https://security-metadata.canonical.com/oval/com.ubuntu.$(lsb_release -cs).usn.oval.xml.bz2
+      register: openvas_play_02_status
+    # extract oval content
+    - name: Play-03 Extract OVAL content
+      shell: |
+        bzip2 -d com.ubuntu.$(lsb_release -cs).usn.oval.xml.bz2
+      register: openvas_play_03_status
+    # generate initial report
+    - name: Play-04 Generate Initial OpenSCAP Report
+      shell: |
+        oscap oval eval --report oval-$(lsb_release -cs).html com.ubuntu.$(lsb_release -cs).usn.oval.xml
+      register: openvas_play_04_status
+    # convert report
+  #  - name: Play-05 Convert OpenSCAP Report (HTML)
+  #    shell: |
+  #      ll oval-$(lsb_release -cs).html
+  #    register: openvas_play_05_status
