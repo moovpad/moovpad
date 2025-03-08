@@ -1,7 +1,7 @@
 ---
 
 - name: Docker Install
-  hosts: 192.168.20.129
+  hosts: [test_ip_address]
   gather_facts: no
   become: yes
   tasks:
