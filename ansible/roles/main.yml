@@ -9,5 +9,3 @@
 - import_playbook: auditd/main.yml
 
 
-# reference:
-# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_playbook_module.html
