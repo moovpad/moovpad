@@ -251,10 +251,10 @@
           - wireguard_play_22_status
           - wireguard_play_23_status
       shell: |
-        sed -i "s/^\"ent_01_name\":*/\"ent_{{ entry }}_name\": \"{{ results.name }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"ent_01_int_value\":*/\"ent_{{ entry }}_int_value\": \" {{ 200 if results.rc == 0 else 400 }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"ent_01_str_value\":*/\"ent_{{ entry }}_str_value\": \" {{ 'Success' if results.rc == 0 else wireguard_play_01_status.stdout }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"ent_01_status\":*/\"ent_{{ entry }}_status\": \" {{ results.rc }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"ent_01_timestamp\":*/\"ent_{{ entry }}_timestamp\": \" {{ results.time }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_{{ entry }}_name\":*/\"ent_{{ entry }}_name\": \"{{ results.name }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_{{ entry }}_int_value\":*/\"ent_{{ entry }}_int_value\": \" {{ 200 if results.rc == 0 else 400 }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_{{ entry }}_str_value\":*/\"ent_{{ entry }}_str_value\": \" {{ 'Success' if results.rc == 0 else wireguard_play_01_status.stdout }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_{{ entry }}_status\":*/\"ent_{{ entry }}_status\": \" {{ results.rc }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_{{ entry }}_timestamp\":*/\"ent_{{ entry }}_timestamp\": \" {{ results.time }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
       loop: "{{ results }}"
       register: wireguard_play_26_status
