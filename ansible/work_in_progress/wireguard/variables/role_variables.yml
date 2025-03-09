@@ -1,0 +1,28 @@
+---
+# variable required for wireguard ansible playbooks - these variables relate to a test using two server-server nodes - Ubuntu 24.04 virtual machines
+
+# server1 - ssh interface variables & config settings
+ssh_1_interface: ssh1
+https_1_designation: https1
+ssh_2_interface: ssh2
+https_2_designation: https2
+
+ssh_pre_key: preshared_key
+
+server1_ip: 000.000.000.000
+server2_ip: 000.000.000.000
+server1_https_pri_key: #get this from the file
+server1_https_pub_key: #get this from the file
+server2_https_pri_key: #get this from the file
+server2_https_pub_key: #get this from the file
+server1_ssh_pri_key: #get this from the file
+server1_ssh_pub_key: #get this from the file
+server2_ssh_pri_key: #get this from the file
+server2_ssh_pub_key: #get this from the file
+https_port: 000000
+ssh_port: 000000
+
+# continue from play-11
+
+# reference for creating variable files in YAML:
+# https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#defining-variables-in-included-files-and-roles

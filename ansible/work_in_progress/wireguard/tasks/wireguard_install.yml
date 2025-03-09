@@ -24,65 +24,67 @@
       register: wireguard_play_03_status
     
     # install public and private keys
-    - name: Play-04 Generate Private & Public Keys - Server
+    - name: Play-04 Generate Private & Public Keys - SSH Interface
       shell: |
-        wg genkey | sudo tee /etc/wireguard/server_{{ interface_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key
+        wg genkey | sudo tee /etc/wireguard/server_{{ ssh_1_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key && \
+        wg genkey | sudo tee /etc/wireguard/server_{{ https_1_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key
       register: wireguard_play_04_status
     
     # install public and private keys
-    - name: Play-05 Generate Private & Public Keys - Client
+    - name: Play-05 Generate Private & Public Keys - HTTPS Interface
       shell: |
-        wg genkey | sudo tee /etc/wireguard/client_{{ interface_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/client_public.key
+        wg genkey | sudo tee /etc/wireguard/server_{{ ssh_2_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key && \
+        wg genkey | sudo tee /etc/wireguard/server_{{ https_2_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key
       register: wireguard_play_05_status
     
     # install public and private keys
     - name: Play-06 Generate Pre-Shared Keys
       shell: |
-        wg genpsk >./user.psk
+        wg genpsk >./{{ ssh_preshared }}.psk
       register: wireguard_play_06_status
     
     # edit client https config files
-    - name: Play-07 Edit Https Client Config Files
+    - name: Play-07 Edit Https Server1 Config Files
       shell: |
-        sed -i "s/^Address =.*/Address = {{ ip_address }}/" /files/template_https_client.yml && \
-        sed -i "s/^ListenPort =.*/ListenPort = {{ port }}/" /files/template_https_client.yml && \
-        sed -i "s/^PrivateKey =.*/PrivateKey = {{ pri_key }}/" /files/template_https_client.yml && \
-        sed -i "s/^PublicKey =.*/PublicKey = {{ pub_key }}/" /files/template_https_client.yml && \
-        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ allow_ips }}/" /files/template_https_client.yml && \
-        sed -i "s/^Endpoint =.*/Endpoint = {{ end_point }}/" /files/template_https_client.yml && \
+        sed -i "s/^Address =.*/Address = {{ server1_ip }}/" /files/template_https_server1.yml && \
+        sed -i "s/^ListenPort =.*/ListenPort = {{ https_port }}/" /files/template_https_server1.yml && \
+        sed -i "s/^PrivateKey =.*/PrivateKey = {{ server1_https_pri_key }}/" /files/template_https_server1.yml && \
+        sed -i "s/^PublicKey =.*/PublicKey = {{ server1_https_pub_key }}/" /files/template_https_server1.yml && \
+        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ server2_ip }}/" /files/template_https_server1.yml && \
+        sed -i "s/^Endpoint =.*/Endpoint = {{ server2_ip }}/" /files/template_https_server1.yml && \
       register: wireguard_play_07_status
     
     # edit server https config files
-    - name: Play-08 Edit Https Server Config Files
+    - name: Play-08 Edit Https Server2 Config Files
       shell: |
-        sed -i "s/^Address =.*/Address = {{ ip_address }}/" /files/template_https_server.yml && \
-        sed -i "s/^ListenPort =.*/ListenPort = {{ port }}/" /files/template_https_server.yml && \
-        sed -i "s/^PrivateKey =.*/PrivateKey = {{ pri_key }}/" /files/template_https_server.yml && \
-        sed -i "s/^PublicKey =.*/PublicKey = {{ pub_key }}/" /files/template_https_server.yml && \
-        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ allow_ips }}/" /files/template_https_server.yml && \
+        sed -i "s/^Address =.*/Address = {{ server2_ip }}/" /files/template_https_server2.yml && \
+        sed -i "s/^ListenPort =.*/ListenPort = {{ https_port }}/" /files/template_https_server2.yml && \
+        sed -i "s/^PrivateKey =.*/PrivateKey = {{ server2_https_pri_key }}/" /files/template_https_server2.yml && \
+        sed -i "s/^PublicKey =.*/PublicKey = {{ server2_https_pub_key }}/" /files/template_https_server2.yml && \
+        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ server1_ip }}/" /files/template_https_server2.yml && \
       register: wireguard_play_08_status
 
     # edit client ssh config files
-    - name: Play-09 Edit SSH Client Config Files
+    - name: Play-09 Edit SSH Server1 Config Files
       shell: |
-        sed -i "s/^Address =.*/Address = {{ ip_address }}/" /files/template_https_client.yml && \
-        sed -i "s/^ListenPort =.*/ListenPort = {{ port }}/" /files/template_https_client.yml && \
-        sed -i "s/^PrivateKey =.*/PrivateKey = {{ pri_key }}/" /files/template_https_client.yml && \
-        sed -i "s/^PublicKey =.*/PublicKey = {{ pub_key }}/" /files/template_https_client.yml && \
-        sed -i "s/^PresharedKey =.*/PresharedKey = {{ pre_key }}/" /files/template_https_client.yml && \
-        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ allow_ips }}/" /files/template_https_client.yml && \
-        sed -i "s/^Endpoint =.*/Endpoint = {{ end_point }}/" /files/template_https_client.yml && \
+        sed -i "s/^Address =.*/Address = {{ server1_ip }}/" /files/template_ssh_server1.yml && \
+        sed -i "s/^ListenPort =.*/ListenPort = {{ ssh_port }}/" /files/template_ssh_server1.yml && \
+        sed -i "s/^PrivateKey =.*/PrivateKey = {{ server1_ssh_pri_key }}/" /files/template_ssh_server1.yml && \
+        sed -i "s/^PublicKey =.*/PublicKey = {{ server1_ssh_pub_key }}/" /files/template_ssh_server1.yml && \
+        sed -i "s/^PresharedKey =.*/PresharedKey = {{ ssh_pre_key }}/" /files/template_ssh_server1.yml && \
+        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ server2_ip }}/" /files/template_ssh_server1.yml && \
+        sed -i "s/^Endpoint =.*/Endpoint = {{ server2_ip }}/" /files/template_ssh_server1.yml && \
       register: wireguard_play_09_status
     
     # edit server ssh config files
-    - name: Play-10 Edit SSH Server Config Files
+    - name: Play-10 Edit SSH Server2 Config Files
       shell: |
-        sed -i "s/^Address =.*/Address = {{ ip_address }}/" /files/template_https_server.yml && \
-        sed -i "s/^ListenPort =.*/ListenPort = {{ port }}/" /files/template_https_server.yml && \
-        sed -i "s/^PrivateKey =.*/PrivateKey = {{ pri_key }}/" /files/template_https_server.yml && \
-        sed -i "s/^PublicKey =.*/PublicKey = {{ pub_key }}/" /files/template_https_server.yml && \
-        sed -i "s/^PresharedKey =.*/PresharedKey = {{ pre_key }}/" /files/template_https_server.yml && \
-        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ allow_ips }}/" /files/template_https_server.yml && \
+        sed -i "s/^Address =.*/Address = {{ server2_ip }}/" /files/template_ssh_server2.yml && \
+        sed -i "s/^ListenPort =.*/ListenPort = {{ ssh_port }}/" /files/template_ssh_server2.yml && \
+        sed -i "s/^PrivateKey =.*/PrivateKey = {{ server2_ssh_pri_key }}/" /files/template_ssh_server2.yml && \
+        sed -i "s/^PublicKey =.*/PublicKey = {{ server2_ssh_pub_key }}/" /files/template_ssh_server2.yml && \
+        sed -i "s/^PresharedKey =.*/PresharedKey = {{ ssh_pre_key }}/" /files/template_ssh_server2.yml && \
+        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ server1_ip }}/" /files/template_ssh_server2.yml && \
       register: wireguard_play_10_status
 
     #copy https client file
