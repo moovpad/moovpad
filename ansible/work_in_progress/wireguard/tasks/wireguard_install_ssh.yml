@@ -1,0 +1,260 @@
+---
+
+- name: WireGuard Install
+  hosts: [group]
+  gather_facts: no
+  become: yes
+  tasks:
+    # update and upgrade
+    - name: Play-01 Update & Upgrade Apt Repository
+      shell: |
+        apt update && apt upgrade -y
+      register: wireguard_play_01_status
+    
+    # install wireguard & tools
+    - name: Play-02 Install Wireguard & Tools
+      shell: |
+        apt install wireguard wireguard-tools -y
+      register: wireguard_play_02_status
+    
+    # install openresolv
+    - name: Play-03 Install Openresolv
+      shell: |
+        apt install openresolv -y
+      register: wireguard_play_03_status
+    
+    # install public and private keys
+    - name: Play-04 Generate Private & Public Keys - Server
+      shell: |
+        wg genkey | sudo tee /etc/wireguard/server_{{ interface_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key
+      register: wireguard_play_04_status
+    
+    # install public and private keys
+    - name: Play-05 Generate Private & Public Keys - Client
+      shell: |
+        wg genkey | sudo tee /etc/wireguard/client_{{ interface_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/client_public.key
+      register: wireguard_play_05_status
+    
+    # install public and private keys
+    - name: Play-06 Generate Pre-Shared Keys
+      shell: |
+        wg genpsk >./user.psk
+      register: wireguard_play_06_status
+    
+    # edit client https config files
+    - name: Play-07 Edit Https Client Config Files
+      shell: |
+        sed -i "s/^Address =.*/Address = {{ ip_address }}/" /files/template_https_client.yml && \
+        sed -i "s/^ListenPort =.*/ListenPort = {{ port }}/" /files/template_https_client.yml && \
+        sed -i "s/^PrivateKey =.*/PrivateKey = {{ pri_key }}/" /files/template_https_client.yml && \
+        sed -i "s/^PublicKey =.*/PublicKey = {{ pub_key }}/" /files/template_https_client.yml && \
+        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ allow_ips }}/" /files/template_https_client.yml && \
+        sed -i "s/^Endpoint =.*/Endpoint = {{ end_point }}/" /files/template_https_client.yml && \
+      register: wireguard_play_07_status
+    
+    # edit server https config files
+    - name: Play-08 Edit Https Server Config Files
+      shell: |
+        sed -i "s/^Address =.*/Address = {{ ip_address }}/" /files/template_https_server.yml && \
+        sed -i "s/^ListenPort =.*/ListenPort = {{ port }}/" /files/template_https_server.yml && \
+        sed -i "s/^PrivateKey =.*/PrivateKey = {{ pri_key }}/" /files/template_https_server.yml && \
+        sed -i "s/^PublicKey =.*/PublicKey = {{ pub_key }}/" /files/template_https_server.yml && \
+        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ allow_ips }}/" /files/template_https_server.yml && \
+      register: wireguard_play_08_status
+
+    # edit client ssh config files
+    - name: Play-09 Edit SSH Client Config Files
+      shell: |
+        sed -i "s/^Address =.*/Address = {{ ip_address }}/" /files/template_https_client.yml && \
+        sed -i "s/^ListenPort =.*/ListenPort = {{ port }}/" /files/template_https_client.yml && \
+        sed -i "s/^PrivateKey =.*/PrivateKey = {{ pri_key }}/" /files/template_https_client.yml && \
+        sed -i "s/^PublicKey =.*/PublicKey = {{ pub_key }}/" /files/template_https_client.yml && \
+        sed -i "s/^PresharedKey =.*/PresharedKey = {{ pre_key }}/" /files/template_https_client.yml && \
+        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ allow_ips }}/" /files/template_https_client.yml && \
+        sed -i "s/^Endpoint =.*/Endpoint = {{ end_point }}/" /files/template_https_client.yml && \
+      register: wireguard_play_09_status
+    
+    # edit server ssh config files
+    - name: Play-10 Edit SSH Server Config Files
+      shell: |
+        sed -i "s/^Address =.*/Address = {{ ip_address }}/" /files/template_https_server.yml && \
+        sed -i "s/^ListenPort =.*/ListenPort = {{ port }}/" /files/template_https_server.yml && \
+        sed -i "s/^PrivateKey =.*/PrivateKey = {{ pri_key }}/" /files/template_https_server.yml && \
+        sed -i "s/^PublicKey =.*/PublicKey = {{ pub_key }}/" /files/template_https_server.yml && \
+        sed -i "s/^PresharedKey =.*/PresharedKey = {{ pre_key }}/" /files/template_https_server.yml && \
+        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ allow_ips }}/" /files/template_https_server.yml && \
+      register: wireguard_play_10_status
+
+    #copy https client file
+    - name: Play-11 Copy Https Client Conf File
+      ansible.builtin.copy:
+        src: files/template_https_client.yml
+        dest: /etc/wireguard/{{ interface_name }}.conf
+        owner: root
+        group: root
+        mode: '600'
+      register: wireguard_play_11_status
+    
+    #copy https server file
+    - name: Play-12 Copy Https Server Conf File
+      ansible.builtin.copy:
+        src: files/template_https_server.yml
+        dest: /etc/wireguard/{{ interface_name }}.conf
+        owner: root
+        group: root
+        mode: '600'
+      register: wireguard_play_12_status
+    
+    #copy ssh client file
+    - name: Play-13 Copy SSH Client Conf File
+      ansible.builtin.copy:
+        src: files/template_ssh_client.yml
+        dest: /etc/wireguard/{{ interface_name }}.conf
+        owner: root
+        group: root
+        mode: '600'
+      register: wireguard_play_13_status
+    
+    #copy ssh server file
+    - name: Play-14 Copy SSH Server Conf File
+      ansible.builtin.copy:
+        src: files/template_ssh_server.yml
+        dest: /etc/wireguard/{{ interface_name }}.conf
+        owner: root
+        group: root
+        mode: '600'
+      register: wireguard_play_14_status
+
+    #start wireguard service
+    - name: Play-15 Start Wireguard Service
+      ignore_errors: yes
+      shell: |
+        systemctl enable wg-quick@wg0 && systemctl start wg-quick@wg0
+      register: wireguard_play_15_status
+    
+    #establish connection
+    - name: Play-16 Connect To Remote Node
+      ignore_errors: yes
+      when: wireguard_play_15_status.rc == 0
+      shell: |
+        wg-quick up {{ interface_designation }}
+      register: wireguard_play_16_status
+    
+    #check connection
+    - name: Play-17 Ping Check Connection
+      ignore_errors: yes
+      when: wireguard_play_16_status.rc == 0
+      shell: |
+        ping -c 5 {{ ip_address }}
+      register: wireguard_play_17_status
+  
+    #terminate connection
+    - name: Play-18 Terminate Wireguard SSH Connection
+      ignore_errors: yes
+      when: wireguard_play_17_status.rc == 0
+      shell: |
+        wg-quick down {{ interface_designation }}
+      register: wireguard_play_18_status
+    
+    # edit server ssh config files
+    - name: Play-19 Edit SSH Server Config Files
+      ignore_errors: yes
+      when: wireguard_play_18_status.rc == 0
+      shell: |
+        sed -i "s/^ListenAddress =.*/ListenAddress {{ ip_address }}/" /etc/ssh/sshd_config
+      register: wireguard_play_19_status
+    
+    # reload ssh service
+    - name: Play-20 Edit SSH Server Config Files
+      ignore_errors: yes
+      when: wireguard_play_19_status.rc == 0
+      shell: |
+        systemctl reload sshd
+      register: wireguard_play_20_status
+    
+    # edit template systemd conf files
+    - name: Play-21 Edit Systemd Conf File
+      when: wireguard_play_20_status.rc == 0
+      shell: |
+        sed -i "s/^#marker1.*/[Unit]/" /files/override.conf && \
+        sed -i "s/^#marker2.*/After=network.target auditd.service wg-quick@{{ interface_designation }}.service/" /files/override.conf && \
+        sed -i "s/^#marker3.*/Requires=sys-devices-virtual-net-{{ interface_designation }}.device/" /files/override.conf
+      register: wireguard_play_21_status
+
+    #copy systemd conf file
+    - name: Play-22 Copy Systemd Conf File
+      when: wireguard_play_21_status.rc == 0
+      ansible.builtin.copy:
+        src: files/override.conf
+        dest: /etc/systemd/system/ssh.service.d/override.conf
+        owner: root
+        group: root
+        mode: '600'
+      register: wireguard_play_22_status
+    
+    #test
+    - name: Play-23 Run Final Test
+      when: wireguard_play_22_status.rc == 0
+      shell: |
+        wg-quick up {{ interface_designation }} && \
+        ssh {{ ip_address }} && \
+        wg-quick down {{ interface_designation }}
+      register: wireguard_play_23_status
+    
+    #copy template report file
+    - name: Play-24 Copy Template Playbook Report
+      ansible.builtin.copy:
+        src: files/template_report.json
+        dest: /home/{{ user }}/ansible/reports/wireguard_install.json
+        owner: root
+        group: root
+        mode: '600'
+      register: wireguard_play_24_status
+    
+    #editing entries for the report title block
+    - name: Play-25 Edit Report Title Block
+      shell: |
+        sed -i "s/^\"title\":*/\"title\": \"Wireguard Install Playbook\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"date_time\":*/\"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"gen_by\":*/\"gen_by\": \"Ansible\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"operator\":*/\"operator\": \"Ansible\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"total_entries\":*/\"total_entries\": 23" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+      register: wireguard_play_25_status
+    
+    #add entries
+    - name: Play-26 Generate Playbook Report
+      set_fact:
+        entry: "{{ index | string if index >= 10 else '0' + index | string }}"
+      vars:
+        results:
+          - wireguard_play_01_status
+          - wireguard_play_02_status
+          - wireguard_play_03_status
+          - wireguard_play_04_status
+          - wireguard_play_05_status
+          - wireguard_play_06_status
+          - wireguard_play_07_status
+          - wireguard_play_08_status
+          - wireguard_play_09_status
+          - wireguard_play_10_status
+          - wireguard_play_11_status
+          - wireguard_play_12_status
+          - wireguard_play_13_status
+          - wireguard_play_14_status
+          - wireguard_play_15_status
+          - wireguard_play_16_status
+          - wireguard_play_17_status
+          - wireguard_play_18_status
+          - wireguard_play_19_status
+          - wireguard_play_20_status
+          - wireguard_play_21_status
+          - wireguard_play_22_status
+          - wireguard_play_23_status
+      shell: |
+        sed -i "s/^\"ent_01_name\":*/\"ent_{{ entry }}_name\": \"{{ results.name }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_01_int_value\":*/\"ent_{{ entry }}_int_value\": \" {{ 200 if results.rc == 0 else 400 }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_01_str_value\":*/\"ent_{{ entry }}_str_value\": \" {{ 'Success' if results.rc == 0 else wireguard_play_01_status.stdout }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_01_status\":*/\"ent_{{ entry }}_status\": \" {{ results.rc }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_01_timestamp\":*/\"ent_{{ entry }}_timestamp\": \" {{ results.time }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+      loop: "{{ results }}"
+      register: wireguard_play_26_status

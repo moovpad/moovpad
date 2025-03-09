@@ -1,0 +1,18 @@
+---
+
+- name: WireGuard - Remove Peer
+  hosts: [group]
+  gather_facts: no
+  become: yes
+  tasks:
+    # remove peer key and alowed ips
+    - name: Play-01 Remove  Peer Key
+      shell: |
+        wg set wg0 peer "{{ key_value }}" remove
+      register: wireguard_play_01_status
+    
+    # add iptables rule
+    - name: Play-02 Remove Iptables Rule
+      shell: |
+        standard iptables command to remove the relevant entry goes here
+      register: wireguard_play_02_status

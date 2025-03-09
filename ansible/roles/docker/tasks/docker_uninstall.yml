@@ -1,7 +1,7 @@
 ---
 
 - name: Docker Uninstall
-  hosts: [group]
+  hosts: [test_ip_address]
   gather_facts: no
   become: yes
   tasks:

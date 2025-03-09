@@ -1,0 +1,18 @@
+---
+
+- name: WireGuard - Add Peer
+  hosts: [group]
+  gather_facts: no
+  become: yes
+  tasks:
+    # add peer key and alowed ips
+    - name: Play-01 Add Key & Allowed IP
+      shell: |
+        wg set wg0 peer "{{ key_value }}" allowed-ips {{ ip_value }}
+      register: wireguard_play_01_status
+    
+    # add iptables rule
+    - name: Play-02 Add Iptables Rule
+      shell: |
+        standard iptables -A append command here with port and protocol specification
+      register: wireguard_play_02_status
