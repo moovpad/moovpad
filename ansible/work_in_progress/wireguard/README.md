@@ -1,0 +1,3 @@
+## ANSIBLE PLAYBOOKS - WIREGUARD
+
+The Wireguard playbooks provided here are designed to install Wireguard on Ubuntu Server 24.04 virtual machines acting as server infrastructure for the moovpad project. As such, these will differ from traditional server-client wireguard installs. The use of Wirguard in these playbook files is specifically centered around https and ssh tunnels for node-node communication (e.g. API calls, remote SSH connections for automated processes, etc).
