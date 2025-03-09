@@ -1,0 +1,91 @@
+---
+
+- name: WireGuard Connection Finalisation
+  hosts: [group]
+  gather_facts: no
+  become: yes
+  tasks:
+    # edit server ssh config files
+    - name: Play-01 Edit SSH Server Config Files
+      ignore_errors: yes
+      when: wireguard_play_18_status.rc == 0
+      shell: |
+        sed -i "s/^ListenAddress =.*/ListenAddress {{ server2_ip }}/" /etc/ssh/sshd_config
+      register: wireguard_play_01_status
+    
+    # reload ssh service
+    - name: Play-02 Edit SSH Server Config Files
+      ignore_errors: yes
+      when: wireguard_play_19_status.rc == 0
+      shell: |
+        systemctl reload sshd
+      register: wireguard_play_02_status
+    
+    # edit template systemd conf files
+    - name: Play-03 Edit Systemd Conf File
+      when: wireguard_play_20_status.rc == 0
+      shell: |
+        sed -i "s/^#marker1.*/[Unit]/" /files/override.conf && \
+        sed -i "s/^#marker2.*/After=network.target auditd.service wg-quick@{{ ssh_1_interface }}.service/" /files/override.conf && \
+        sed -i "s/^#marker3.*/Requires=sys-devices-virtual-net-{{ ssh_1_interface }}.device/" /files/override.conf
+      register: wireguard_play_03_status
+
+    #copy systemd conf file
+    - name: Play-04 Copy Systemd Conf File
+      when: wireguard_play_21_status.rc == 0
+      ansible.builtin.copy:
+        src: files/override.conf
+        dest: /etc/systemd/system/ssh.service.d/override.conf
+        owner: root
+        group: root
+        mode: '600'
+      register: wireguard_play_04_status
+    
+    #test
+    - name: Play-05 Run Final Test
+      when: wireguard_play_22_status.rc == 0
+      shell: |
+        wg-quick up {{ ssh_1_interface }} && \
+        ssh {{ server2 }} && \
+        wg-quick down {{ ssh_1_interface }}
+      register: wireguard_play_05_status
+    
+    #copy template report file
+    - name: Play-06 Copy Template Playbook Report
+      ansible.builtin.copy:
+        src: files/template_report.json
+        dest: /home/{{ user }}/ansible/reports/wireguard_conn_finalise.json
+        owner: root
+        group: root
+        mode: '600'
+      register: wireguard_play_06_status
+    
+    #editing entries for the report title block
+    - name: Play-07 Edit Report Title Block
+      shell: |
+        sed -i "s/^\"title\":*/\"title\": \"Wireguard Connection Finalisation Playbook\"" /home/{{ user }}/ansible/reports/wireguard_conn_finalise.json && \
+        sed -i "s/^\"date_time\":*/\"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"" /home/{{ user }}/ansible/reports/wireguard_conn_finalise.json && \
+        sed -i "s/^\"gen_by\":*/\"gen_by\": \"Ansible\"" /home/{{ user }}/ansible/reports/wireguard_conn_finalise.json && \
+        sed -i "s/^\"operator\":*/\"operator\": \"Ansible\"" /home/{{ user }}/ansible/reports/wireguard_conn_finalise.json && \
+        sed -i "s/^\"total_entries\":*/\"total_entries\": 5" /home/{{ user }}/ansible/reports/wireguard_conn_finalise.json && \
+      register: wireguard_play_07_status
+    
+    #add entries
+    - name: Play-08 Generate Playbook Report
+      set_fact:
+        entry: "{{ index | string if index >= 10 else '0' + index | string }}"
+      vars:
+        results:
+          - wireguard_play_01_status
+          - wireguard_play_02_status
+          - wireguard_play_03_status
+          - wireguard_play_04_status
+          - wireguard_play_05_status
+      shell: |
+        sed -i "s/^\"ent_{{ entry }}_name\":*/\"ent_{{ entry }}_name\": \"{{ results.name }}\"" /home/{{ user }}/ansible/reports/wireguard_conn_finalise.json && \
+        sed -i "s/^\"ent_{{ entry }}_int_value\":*/\"ent_{{ entry }}_int_value\": \" {{ 200 if results.rc == 0 else 400 }}\"" /home/{{ user }}/ansible/reports/wireguard_conn_finalise.json && \
+        sed -i "s/^\"ent_{{ entry }}_str_value\":*/\"ent_{{ entry }}_str_value\": \" {{ 'Success' if results.rc == 0 else wireguard_play_01_status.stdout }}\"" /home/{{ user }}/ansible/reports/wireguard_conn_finalise.json && \
+        sed -i "s/^\"ent_{{ entry }}_status\":*/\"ent_{{ entry }}_status\": \" {{ results.rc }}\"" /home/{{ user }}/ansible/reports/wireguard_conn_finalise.json && \
+        sed -i "s/^\"ent_{{ entry }}_timestamp\":*/\"ent_{{ entry }}_timestamp\": \" {{ results.time }}\"" /home/{{ user }}/ansible/reports/wireguard_conn_finalise.json && \
+      loop: "{{ results }}"
+      register: wireguard_play_08_status

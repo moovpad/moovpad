@@ -1,0 +1,76 @@
+---
+
+- name: WireGuard Connection Check
+  hosts: [group]
+  gather_facts: no
+  become: yes
+  tasks:
+    #start wireguard service
+    - name: Play-01 Start Wireguard Service
+      ignore_errors: yes
+      shell: |
+        systemctl enable wg-quick@{{ ssh_1_interface }} && systemctl start wg-quick@{{ ssh_1_interface }}
+      register: wireguard_play_01_status
+    
+    #establish connection
+    - name: Play-02 Connect To Remote Node
+      ignore_errors: yes
+      when: wireguard_play_15_status.rc == 0
+      shell: |
+        wg-quick up {{ ssh_1_interface }}
+      register: wireguard_play_02_status
+    
+    #check connection
+    - name: Play-03 Ping Check Connection
+      ignore_errors: yes
+      when: wireguard_play_16_status.rc == 0
+      shell: |
+        ping -c 5 {{ server2_ip }}
+      register: wireguard_play_03_status
+  
+    #terminate connection
+    - name: Play-04 Terminate Wireguard SSH Connection
+      ignore_errors: yes
+      when: wireguard_play_17_status.rc == 0
+      shell: |
+        wg-quick down {{ ssh_1_interface }}
+      register: wireguard_play_04_status
+    
+    #copy template report file
+    - name: Play-05 Copy Template Playbook Report
+      ansible.builtin.copy:
+        src: files/template_report.json
+        dest: /home/{{ user }}/ansible/reports/wireguard_conn_check.json
+        owner: root
+        group: root
+        mode: '600'
+      register: wireguard_play_05_status
+    
+    #editing entries for the report title block
+    - name: Play-06 Edit Report Title Block
+      shell: |
+        sed -i "s/^\"title\":*/\"title\": \"Wireguard Connection Check Playbook\"" /home/{{ user }}/ansible/reports/wireguard_conn_check.json && \
+        sed -i "s/^\"date_time\":*/\"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"" /home/{{ user }}/ansible/reports/wireguard_conn_check.json && \
+        sed -i "s/^\"gen_by\":*/\"gen_by\": \"Ansible\"" /home/{{ user }}/ansible/reports/wireguard_conn_check.json && \
+        sed -i "s/^\"operator\":*/\"operator\": \"Ansible\"" /home/{{ user }}/ansible/reports/wireguard_conn_check.json && \
+        sed -i "s/^\"total_entries\":*/\"total_entries\": 4" /home/{{ user }}/ansible/reports/wireguard_conn_check.json && \
+      register: wireguard_play_06_status
+    
+    #add entries
+    - name: Play-07 Generate Playbook Report
+      set_fact:
+        entry: "{{ index | string if index >= 10 else '0' + index | string }}"
+      vars:
+        results:
+          - wireguard_play_01_status
+          - wireguard_play_02_status
+          - wireguard_play_03_status
+          - wireguard_play_04_status
+      shell: |
+        sed -i "s/^\"ent_{{ entry }}_name\":*/\"ent_{{ entry }}_name\": \"{{ results.name }}\"" /home/{{ user }}/ansible/reports/wireguard_conn_check.json && \
+        sed -i "s/^\"ent_{{ entry }}_int_value\":*/\"ent_{{ entry }}_int_value\": \" {{ 200 if results.rc == 0 else 400 }}\"" /home/{{ user }}/ansible/reports/wireguard_conn_check.json && \
+        sed -i "s/^\"ent_{{ entry }}_str_value\":*/\"ent_{{ entry }}_str_value\": \" {{ 'Success' if results.rc == 0 else wireguard_play_01_status.stdout }}\"" /home/{{ user }}/ansible/reports/wireguard_conn_check.json && \
+        sed -i "s/^\"ent_{{ entry }}_status\":*/\"ent_{{ entry }}_status\": \" {{ results.rc }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_{{ entry }}_timestamp\":*/\"ent_{{ entry }}_timestamp\": \" {{ results.time }}\"" /home/{{ user }}/ansible/reports/wireguard_conn_check.json
+      loop: "{{ results }}"
+      register: wireguard_play_07_status
