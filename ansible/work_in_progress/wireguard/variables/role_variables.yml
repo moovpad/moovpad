@@ -9,8 +9,8 @@ https_2_designation: https2
 
 ssh_preshared: preshared_key
 
-server1_ip: 192.168.20.249 #test ip
-server2_ip: 192.168.20.51 #test ip
+server1_ip: 192.168.20.249
+server2_ip: 192.168.20.51
 server1_https_pri_key: #get this from the file
 server1_https_pub_key: #get this from the file
 server2_https_pri_key: #get this from the file
@@ -21,6 +21,9 @@ server2_ssh_pri_key: #get this from the file
 server2_ssh_pub_key: #get this from the file
 https_port: 000000
 ssh_port: 000000
+
+# other variables:
+user: emh
 
 # continue from play-11
 
