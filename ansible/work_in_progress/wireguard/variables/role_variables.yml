@@ -9,8 +9,8 @@ https_2_designation: https2
 
 ssh_pre_key: preshared_key
 
-server1_ip: 000.000.000.000
-server2_ip: 000.000.000.000
+server1_ip: 192.168.20.249
+server2_ip: 192.168.20.51
 server1_https_pri_key: #get this from the file
 server1_https_pub_key: #get this from the file
 server2_https_pri_key: #get this from the file

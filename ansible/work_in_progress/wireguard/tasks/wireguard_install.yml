@@ -1,9 +1,11 @@
 ---
 
 - name: WireGuard Install
-  hosts: [group]
+  hosts: ip
   gather_facts: no
   become: yes
+  vars_files: /home/emh/ansible/wireguard/variales/role_variables.yml
+    - 
   tasks:
     # update and upgrade
     - name: Play-01 Update & Upgrade Apt Repository
@@ -26,15 +28,15 @@
     # install public and private keys
     - name: Play-04 Generate Private & Public Keys - SSH Interface
       shell: |
-        wg genkey | sudo tee /etc/wireguard/server_{{ ssh_1_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key && \
-        wg genkey | sudo tee /etc/wireguard/server_{{ https_1_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key
+        wg genkey | sudo tee /etc/wireguard/server_{{ ssh_1_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/{{ ssh_1_designation }}_public.key && \
+        wg genkey | sudo tee /etc/wireguard/server_{{ https_1_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/{{ https_1_designation }}_public.key
       register: wireguard_play_04_status
     
     # install public and private keys
     - name: Play-05 Generate Private & Public Keys - HTTPS Interface
       shell: |
-        wg genkey | sudo tee /etc/wireguard/server_{{ ssh_2_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key && \
-        wg genkey | sudo tee /etc/wireguard/server_{{ https_2_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key
+        wg genkey | sudo tee /etc/wireguard/server_{{ ssh_2_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/{{ ssh_2_designation }}_public.key && \
+        wg genkey | sudo tee /etc/wireguard/server_{{ https_2_designation }}_private.key | wg pubkey | sudo tee /etc/wireguard/{{ https_2_designation }}_public.key
       register: wireguard_play_05_status
     
     # install public and private keys
@@ -55,8 +57,25 @@
       register: wireguard_play_07_status
     
     # edit server https config files
-    - name: Play-08 Edit Https Server2 Config Files
+    - name: Play-08 Edit Https Server2 Config & Variable Files
+      set_fact:
+        https1_pri_key: cat /etc/wireguard/server_{{ https_1_designation }}_private.key
+        https1_pub_key: cat /etc/wireguard/server_{{ https_1_designation }}_public.key
+        https2_pri_key: cat /etc/wireguard/server_{{ https_2_designation }}_private.key
+        https2_pub_key: cat /etc/wireguard/server_{{ https_2_designation }}_public.key
+        ssh1_pri_key: cat /etc/wireguard/server_{{ ssh_1_designation }}_private.key
+        ssh1_pub_key: cat /etc/wireguard/server_{{ ssh_1_designation }}_public.key
+        ssh2_pri_key: cat /etc/wireguard/server_{{ ssh_2_designation }}_private.key
+        ssh2_pub_key: cat /etc/wireguard/server_{{ ssh_2_designation }}_public.key
       shell: |
+        sed -i "s/^server1_https_pri_key:.*/server1_https_pri_key: {{ https1_pri_key }}/" /home/emh/ansible/wireguard/variales/role_variables.yml && \
+        sed -i "s/^server1_https_pub_key:.*/server1_https_pub_key: {{ https1_pub_key }}/" /home/emh/ansible/wireguard/variales/role_variables.yml && \
+        sed -i "s/^server2_https_pri_key:.*/server2_https_pri_key: {{ https2_pri_key }}/" /home/emh/ansible/wireguard/variales/role_variables.yml && \
+        sed -i "s/^server2_https_pub_key:.*/server2_https_pub_key: {{ https2_pub_key }}/" /home/emh/ansible/wireguard/variales/role_variables.yml && \
+        sed -i "s/^server1_ssh_pri_key:.*/server1_ssh_pri_key: {{ ssh1_pri_key }}/" /home/emh/ansible/wireguard/variales/role_variables.yml && \
+        sed -i "s/^server1_ssh_pub_key:.*/server1_ssh_pub_key: {{ ssh1_pub_key }}/" /home/emh/ansible/wireguard/variales/role_variables.yml && \
+        sed -i "s/^server2_ssh_pri_key:.*/server2_ssh_pri_key: {{ ssh2_pri_key }}/" /home/emh/ansible/wireguard/variales/role_variables.yml && \
+        sed -i "s/^server2_ssh_pub_key:.*/server2_ssh_pub_key: {{ ssh2_pub_key }}/" /home/emh/ansible/wireguard/variales/role_variables.yml && \
         sed -i "s/^Address =.*/Address = {{ server2_ip }}/" /files/template_https_server2.yml && \
         sed -i "s/^ListenPort =.*/ListenPort = {{ https_port }}/" /files/template_https_server2.yml && \
         sed -i "s/^PrivateKey =.*/PrivateKey = {{ server2_https_pri_key }}/" /files/template_https_server2.yml && \
