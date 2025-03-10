@@ -1,11 +1,11 @@
 ---
 
 - name: WireGuard Install
-  hosts: ip
+  hosts: 192.168.20.249
   gather_facts: no
   become: yes
-  vars_files: /home/emh/ansible/wireguard/variales/role_variables.yml
-    - 
+  vars_files: 
+    - /home/emh/ansible/wireguard/variales/role_variables.yml
   tasks:
     # update and upgrade
     - name: Play-01 Update & Upgrade Apt Repository
@@ -20,10 +20,10 @@
       register: wireguard_play_02_status
     
     # install openresolv
-    - name: Play-03 Install Openresolv
-      shell: |
-        apt install openresolv -y
-      register: wireguard_play_03_status
+    #- name: Play-03 Install Openresolv
+    #  shell: |
+    #    apt install openresolv -y
+    #  register: wireguard_play_03_status
     
     # install public and private keys
     - name: Play-04 Generate Private & Public Keys - SSH Interface
@@ -48,17 +48,17 @@
     # edit client https config files
     - name: Play-07 Edit Https Server1 Config Files
       shell: |
-        sed -i "s/^Address =.*/Address = {{ server1_ip }}/" /files/template_https_server1.yml && \
-        sed -i "s/^ListenPort =.*/ListenPort = {{ https_port }}/" /files/template_https_server1.yml && \
-        sed -i "s/^PrivateKey =.*/PrivateKey = {{ server1_https_pri_key }}/" /files/template_https_server1.yml && \
-        sed -i "s/^PublicKey =.*/PublicKey = {{ server1_https_pub_key }}/" /files/template_https_server1.yml && \
-        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ server2_ip }}/" /files/template_https_server1.yml && \
-        sed -i "s/^Endpoint =.*/Endpoint = {{ server2_ip }}/" /files/template_https_server1.yml && \
+        sed -i "s/^Address =.*/Address = {{ server1_ip }}/" /files/template_https_server1.conf && \
+        sed -i "s/^ListenPort =.*/ListenPort = {{ https_port }}/" /files/template_https_server1.conf && \
+        sed -i "s/^PrivateKey =.*/PrivateKey = {{ server1_https_pri_key }}/" /files/template_https_server1.conf && \
+        sed -i "s/^PublicKey =.*/PublicKey = {{ server1_https_pub_key }}/" /files/template_https_server1.conf && \
+        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ server2_ip }}/" /files/template_https_server1.conf && \
+        sed -i "s/^Endpoint =.*/Endpoint = {{ server2_ip }}/" /files/template_https_server1.conf
       register: wireguard_play_07_status
     
     # edit server https config files
     - name: Play-08 Edit Https Server2 Config & Variable Files
-      set_fact:
+      ansible.builtin.set_fact:
         https1_pri_key: cat /etc/wireguard/server_{{ https_1_designation }}_private.key
         https1_pub_key: cat /etc/wireguard/server_{{ https_1_designation }}_public.key
         https2_pri_key: cat /etc/wireguard/server_{{ https_2_designation }}_private.key
@@ -67,6 +67,9 @@
         ssh1_pub_key: cat /etc/wireguard/server_{{ ssh_1_designation }}_public.key
         ssh2_pri_key: cat /etc/wireguard/server_{{ ssh_2_designation }}_private.key
         ssh2_pub_key: cat /etc/wireguard/server_{{ ssh_2_designation }}_public.key
+
+    # edit server https config files
+    - name: Play-08 Edit Https Server2 Config & Variable Files
       shell: |
         sed -i "s/^server1_https_pri_key:.*/server1_https_pri_key: {{ https1_pri_key }}/" /home/emh/ansible/wireguard/variales/role_variables.yml && \
         sed -i "s/^server1_https_pub_key:.*/server1_https_pub_key: {{ https1_pub_key }}/" /home/emh/ansible/wireguard/variales/role_variables.yml && \
@@ -80,7 +83,7 @@
         sed -i "s/^ListenPort =.*/ListenPort = {{ https_port }}/" /files/template_https_server2.yml && \
         sed -i "s/^PrivateKey =.*/PrivateKey = {{ server2_https_pri_key }}/" /files/template_https_server2.yml && \
         sed -i "s/^PublicKey =.*/PublicKey = {{ server2_https_pub_key }}/" /files/template_https_server2.yml && \
-        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ server1_ip }}/" /files/template_https_server2.yml && \
+        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ server1_ip }}/" /files/template_https_server2.yml
       register: wireguard_play_08_status
 
     # edit client ssh config files
@@ -92,7 +95,7 @@
         sed -i "s/^PublicKey =.*/PublicKey = {{ server1_ssh_pub_key }}/" /files/template_ssh_server1.yml && \
         sed -i "s/^PresharedKey =.*/PresharedKey = {{ ssh_pre_key }}/" /files/template_ssh_server1.yml && \
         sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ server2_ip }}/" /files/template_ssh_server1.yml && \
-        sed -i "s/^Endpoint =.*/Endpoint = {{ server2_ip }}/" /files/template_ssh_server1.yml && \
+        sed -i "s/^Endpoint =.*/Endpoint = {{ server2_ip }}/" /files/template_ssh_server1.yml
       register: wireguard_play_09_status
     
     # edit server ssh config files
@@ -103,7 +106,7 @@
         sed -i "s/^PrivateKey =.*/PrivateKey = {{ server2_ssh_pri_key }}/" /files/template_ssh_server2.yml && \
         sed -i "s/^PublicKey =.*/PublicKey = {{ server2_ssh_pub_key }}/" /files/template_ssh_server2.yml && \
         sed -i "s/^PresharedKey =.*/PresharedKey = {{ ssh_pre_key }}/" /files/template_ssh_server2.yml && \
-        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ server1_ip }}/" /files/template_ssh_server2.yml && \
+        sed -i "s/^AllowedIPs =.*/AllowedIPs = {{ server1_ip }}/" /files/template_ssh_server2.yml
       register: wireguard_play_10_status
 
     #copy https server1 file
@@ -163,13 +166,16 @@
         sed -i "s/^\"date_time\":*/\"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
         sed -i "s/^\"gen_by\":*/\"gen_by\": \"Ansible\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
         sed -i "s/^\"operator\":*/\"operator\": \"Ansible\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"total_entries\":*/\"total_entries\": 17" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"total_entries\":*/\"total_entries\": 17" /home/{{ user }}/ansible/reports/wireguard_install.json
       register: wireguard_play_16_status
     
     #add entries
     - name: Play-17 Generate Playbook Report
       set_fact:
         entry: "{{ index | string if index >= 10 else '0' + index | string }}"
+    
+    #add entries
+    - name: Play-17 Generate Playbook Report
       vars:
         results:
           - wireguard_play_01_status
@@ -191,6 +197,6 @@
         sed -i "s/^\"ent_{{ entry }}_int_value\":*/\"ent_{{ entry }}_int_value\": \" {{ 200 if results.rc == 0 else 400 }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
         sed -i "s/^\"ent_{{ entry }}_str_value\":*/\"ent_{{ entry }}_str_value\": \" {{ 'Success' if results.rc == 0 else wireguard_play_01_status.stdout }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
         sed -i "s/^\"ent_{{ entry }}_status\":*/\"ent_{{ entry }}_status\": \" {{ results.rc }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"ent_{{ entry }}_timestamp\":*/\"ent_{{ entry }}_timestamp\": \" {{ results.time }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_{{ entry }}_timestamp\":*/\"ent_{{ entry }}_timestamp\": \" {{ results.time }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json
       loop: "{{ results }}"
       register: wireguard_play_17_status

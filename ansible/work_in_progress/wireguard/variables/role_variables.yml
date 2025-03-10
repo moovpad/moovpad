@@ -2,12 +2,12 @@
 # variable required for wireguard ansible playbooks - these variables relate to a test using two server-server nodes - Ubuntu 24.04 virtual machines
 
 # server1 - ssh interface variables & config settings
-ssh_1_interface: ssh1
+ssh_1_designation: ssh1
 https_1_designation: https1
-ssh_2_interface: ssh2
+ssh_2_designation: ssh2
 https_2_designation: https2
 
-ssh_pre_key: preshared_key
+ssh_preshared: preshared_key
 
 server1_ip: 192.168.20.249 #test ip
 server2_ip: 192.168.20.51 #test ip
