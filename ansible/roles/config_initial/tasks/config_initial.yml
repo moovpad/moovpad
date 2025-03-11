@@ -52,7 +52,7 @@
 #        state: running
 #        enabled: true
 #      register: config_play_09_status
-    # install coud-init
+    # install cloud-init
     - name: Play-09 Install Cloud-Init
       package: 
         name: cloud-init 

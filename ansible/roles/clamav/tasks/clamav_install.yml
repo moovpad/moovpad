@@ -56,10 +56,7 @@
 
     # configure log file pointer
     - name: Play-08 Set Maximum Size of Log File
-    # check file path is right
       shell: |
         sed -i "s/^UpdateLogFile.*/UpdateLogFile \/var\/log\/freshclam.log/" /etc/clamav/freshclam.conf
       register: auditd_play_08_status
-      #the normal sed command format didn't work because of the '/' for the filename, so had to prefix each '/' with a '\'
-      #resource: https://superuser.com/questions/1733693/how-to-find-and-replace-string-include-special-character-with-sed-command
     ##################################################################################################################

@@ -25,8 +25,3 @@
       shell: |
         oscap oval eval --report oval-$(lsb_release -cs).html com.ubuntu.$(lsb_release -cs).usn.oval.xml
       register: openvas_play_04_status
-    # convert report
-  #  - name: Play-05 Convert OpenSCAP Report (HTML)
-  #    shell: |
-  #      ll oval-$(lsb_release -cs).html
-  #    register: openvas_play_05_status

@@ -2,7 +2,6 @@
 
 - name: Auditd Install
   hosts: [test_ip_address]
-  #above ip is used for initial testing vm only - local run
   gather_facts: no
   become: yes
   tasks:
