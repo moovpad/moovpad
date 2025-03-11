@@ -7,6 +7,35 @@
   vars_files: 
     - role_variables.yml
   tasks:
+    # create directory
+    - name: Play-00a Create Reports Directory
+      shell: |
+        mkdir /home/{{ user }}/ansible/reports && \
+        chmod 600 /home/{{ user }}/ansible/reports && \
+        chown {{ user }} /home/emh/ansible/reports && \
+        chgrp {{ user }} /home/emh/ansible/reports
+      register: wireguard_play_00a_status
+
+    #copy template report file
+    - name: Play-00b Copy Template Playbook Report
+      ansible.builtin.copy:
+        src: /home/{{ user }}/ansible/wireguard/files/template_report.json
+        dest: /home/{{ user }}/ansible/reports/wireguard_install.json
+        owner: root
+        group: root
+        mode: '600'
+      register: wireguard_play_00b_status
+    
+    #editing entries for the report title block
+    - name: Play-00c Edit Report Title Block
+      shell: |
+        sed -i "s/^\"title\":*/\"title\": \"Wireguard Install Playbook\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"date_time\":*/\"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"gen_by\":*/\"gen_by\": \"Ansible\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"operator\":*/\"operator\": \"Ansible\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"total_entries\":*/\"total_entries\": 24/" /home/{{ user }}/ansible/reports/wireguard_install.json
+      register: wireguard_play_00c_status
+
     # update and upgrade
     - name: Play-01 Update & Upgrade Apt Repository
       shell: |
@@ -223,71 +252,172 @@
         group: root
         mode: '600'
       register: wireguard_play_22_status
-    
-    # edit server ssh config files
-    - name: Play-23 Edit SSH Server2 Config Files
-      shell: |
-        mkdir /home/{{ user }}/ansible/reports && \
-        chmod 600 /home/{{ user }}/ansible/reports && \
-        chown {{ user }} /home/emh/ansible/reports && \
-        chgrp {{ user }} /home/emh/ansible/reports
-      register: wireguard_play_23_status
 
-    #copy template report file
-    - name: Play-24 Copy Template Playbook Report
-      ansible.builtin.copy:
-        src: /home/{{ user }}/ansible/wireguard/files/template_report.json
-        dest: /home/{{ user }}/ansible/reports/wireguard_install.json
-        owner: root
-        group: root
-        mode: '600'
-      register: wireguard_play_24_status
-    
-    #editing entries for the report title block
-    - name: Play-25 Edit Report Title Block
+    #add entries
+    - name: Play-100-01 Generate Playbook Report Task-01
       shell: |
-        sed -i "s/^\"title\":*/\"title\": \"Wireguard Install Playbook\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"date_time\":*/\"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"gen_by\":*/\"gen_by\": \"Ansible\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"operator\":*/\"operator\": \"Ansible\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"total_entries\":*/\"total_entries\": 24/" /home/{{ user }}/ansible/reports/wireguard_install.json
-      register: wireguard_play_25_status
+        sed -i "s/^\"ent_01_int_value\":*/\"ent_01_int_value\": \" {{ 200 if wireguard_play_01_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_01_str_value\":*/\"ent_01_str_value\": \" {{ 'Success' if wireguard_play_01_status.rc == 0 else wireguard_play_01_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_01_status\":*/\"ent_01_status\": \" {{ wireguard_play_01_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+
+    #add entries
+    - name: Play-100-02 Generate Playbook Report Task-02
+      shell: |
+        sed -i "s/^\"ent_02_int_value\":*/\"ent_02_int_value\": \" {{ 200 if wireguard_play_02_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_02_str_value\":*/\"ent_02_str_value\": \" {{ 'Success' if wireguard_play_02_status.rc == 0 else wireguard_play_02_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_02_status\":*/\"ent_02_status\": \" {{ wireguard_play_02_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
     
     #add entries
-    - name: Play-26 Generate Playbook Report
-      vars:
-        results:
-          - wireguard_play_01_status
-          - wireguard_play_02_status
-          - wireguard_play_03_status
-          - wireguard_play_04_status
-          - wireguard_play_05_status
-          - wireguard_play_06_status
-          - wireguard_play_07_status
-          - wireguard_play_08_status
-          - wireguard_play_09_status
-          - wireguard_play_10_status
-          - wireguard_play_11_status
-          - wireguard_play_12_status
-          - wireguard_play_13_status
-          - wireguard_play_14_status
-          - wireguard_play_15_status
-          - wireguard_play_16_status
-          - wireguard_play_17_status
-          - wireguard_play_18_status
-          - wireguard_play_19_status
-          - wireguard_play_20_status
-          - wireguard_play_21_status
-          - wireguard_play_22_status
-          - wireguard_play_23_status
-          - wireguard_play_24_status
+    - name: Play-100-03 Generate Playbook Report Task-03
       shell: |
-        sed -i "s/^\"ent_{{ index }}_name\":*/\"ent_{{ index }}_name\": \"{{ results.name }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"ent_{{ index }}_int_value\":*/\"ent_{{ index }}_int_value\": \" {{ 200 if results.rc == 0 else 400 }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"ent_{{ index }}_str_value\":*/\"ent_{{ index }}_str_value\": \" {{ 'Success' if results.rc == 0 else wireguard_play_01_status.stdout }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"ent_{{ index }}_status\":*/\"ent_{{ index }}_status\": \" {{ results.rc }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"ent_{{ index }}_timestamp\":*/\"ent_{{ index }}_timestamp\": \" {{ results.time }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json
-      loop: "{{ results }}"
-      loop_control:
-        index_var: index
-      register: wireguard_play_26_status
+        sed -i "s/^\"ent_03_int_value\":*/\"ent_03_int_value\": \" {{ 200 if wireguard_play_03_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_03_str_value\":*/\"ent_03_str_value\": \" {{ 'Success' if wireguard_play_03_status.rc == 0 else wireguard_play_03_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_03_status\":*/\"ent_03_status\": \" {{ wireguard_play_03_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-04 Generate Playbook Report Task-04
+      shell: |
+        sed -i "s/^\"ent_04_int_value\":*/\"ent_04_int_value\": \" {{ 200 if wireguard_play_04_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_04_str_value\":*/\"ent_04_str_value\": \" {{ 'Success' if wireguard_play_04_status.rc == 0 else wireguard_play_04_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_04_status\":*/\"ent_04_status\": \" {{ wireguard_play_04_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-05 Generate Playbook Report Task-05
+      shell: |
+        sed -i "s/^\"ent_05_int_value\":*/\"ent_05_int_value\": \" {{ 200 if wireguard_play_05_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_05_str_value\":*/\"ent_05_str_value\": \" {{ 'Success' if wireguard_play_05_status.rc == 0 else wireguard_play_05_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_05_status\":*/\"ent_05_status\": \" {{ wireguard_play_05_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-06 Generate Playbook Report Task-06
+      shell: |
+        sed -i "s/^\"ent_06_int_value\":*/\"ent_06_int_value\": \" {{ 200 if wireguard_play_06_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_06_str_value\":*/\"ent_06_str_value\": \" {{ 'Success' if wireguard_play_06_status.rc == 0 else wireguard_play_06_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_06_status\":*/\"ent_06_status\": \" {{ wireguard_play_06_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-07 Generate Playbook Report Task-07
+      shell: |
+        sed -i "s/^\"ent_07_int_value\":*/\"ent_07_int_value\": \" {{ 200 if wireguard_play_07_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_07_str_value\":*/\"ent_07_str_value\": \" {{ 'Success' if wireguard_play_07_status.rc == 0 else wireguard_play_07_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_07_status\":*/\"ent_07_status\": \" {{ wireguard_play_07_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-08 Generate Playbook Report Task-08
+      shell: |
+        sed -i "s/^\"ent_08_int_value\":*/\"ent_08_int_value\": \" {{ 200 if wireguard_play_08_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_08_str_value\":*/\"ent_08_str_value\": \" {{ 'Success' if wireguard_play_08_status.rc == 0 else wireguard_play_08_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_08_status\":*/\"ent_08_status\": \" {{ wireguard_play_08_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-09 Generate Playbook Report Task-09
+      shell: |
+        sed -i "s/^\"ent_09_int_value\":*/\"ent_09_int_value\": \" {{ 200 if wireguard_play_09_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_09_str_value\":*/\"ent_09_str_value\": \" {{ 'Success' if wireguard_play_09_status.rc == 0 else wireguard_play_09_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_09_status\":*/\"ent_09_status\": \" {{ wireguard_play_09_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-10 Generate Playbook Report Task-10
+      shell: |
+        sed -i "s/^\"ent_10_int_value\":*/\"ent_10_int_value\": \" {{ 200 if wireguard_play_10_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_10_str_value\":*/\"ent_10_str_value\": \" {{ 'Success' if wireguard_play_10_status.rc == 0 else wireguard_play_10_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_10_status\":*/\"ent_10_status\": \" {{ wireguard_play_10_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+
+    #add entries
+    - name: Play-100-11 Generate Playbook Report Task-11
+      shell: |
+        sed -i "s/^\"ent_11_int_value\":*/\"ent_11_int_value\": \" {{ 200 if wireguard_play_11_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_11_str_value\":*/\"ent_11_str_value\": \" {{ 'Success' if wireguard_play_11_status.rc == 0 else wireguard_play_11_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_11_status\":*/\"ent_11_status\": \" {{ wireguard_play_11_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+
+    #add entries
+    - name: Play-100-12 Generate Playbook Report Task-12
+      shell: |
+        sed -i "s/^\"ent_12_int_value\":*/\"ent_12_int_value\": \" {{ 200 if wireguard_play_12_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_12_str_value\":*/\"ent_12_str_value\": \" {{ 'Success' if wireguard_play_12_status.rc == 0 else wireguard_play_12_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_12_status\":*/\"ent_12_status\": \" {{ wireguard_play_12_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-13 Generate Playbook Report Task-13
+      shell: |
+        sed -i "s/^\"ent_13_int_value\":*/\"ent_13_int_value\": \" {{ 200 if wireguard_play_13_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_13_str_value\":*/\"ent_13_str_value\": \" {{ 'Success' if wireguard_play_13_status.rc == 0 else wireguard_play_13_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_13_status\":*/\"ent_13_status\": \" {{ wireguard_play_13_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-14 Generate Playbook Report Task-14
+      shell: |
+        sed -i "s/^\"ent_14_int_value\":*/\"ent_14_int_value\": \" {{ 200 if wireguard_play_14_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_14_str_value\":*/\"ent_14_str_value\": \" {{ 'Success' if wireguard_play_14_status.rc == 0 else wireguard_play_14_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_14_status\":*/\"ent_14_status\": \" {{ wireguard_play_14_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-15 Generate Playbook Report Task-15
+      shell: |
+        sed -i "s/^\"ent_15_int_value\":*/\"ent_15_int_value\": \" {{ 200 if wireguard_play_15_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_15_str_value\":*/\"ent_15_str_value\": \" {{ 'Success' if wireguard_play_15_status.rc == 0 else wireguard_play_15_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_15_status\":*/\"ent_15_status\": \" {{ wireguard_play_15_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-16 Generate Playbook Report Task-16
+      shell: |
+        sed -i "s/^\"ent_16_int_value\":*/\"ent_16_int_value\": \" {{ 200 if wireguard_play_16_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_16_str_value\":*/\"ent_16_str_value\": \" {{ 'Success' if wireguard_play_16_status.rc == 0 else wireguard_play_16_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_16_status\":*/\"ent_16_status\": \" {{ wireguard_play_16_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-17 Generate Playbook Report Task-17
+      shell: |
+        sed -i "s/^\"ent_17_int_value\":*/\"ent_17_int_value\": \" {{ 200 if wireguard_play_17_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_17_str_value\":*/\"ent_17_str_value\": \" {{ 'Success' if wireguard_play_17_status.rc == 0 else wireguard_play_17_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_17_status\":*/\"ent_17_status\": \" {{ wireguard_play_17_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    - name: Play-100-18 Generate Playbook Report Task-18
+      shell: |
+        sed -i "s/^\"ent_18_int_value\":*/\"ent_18_int_value\": \" {{ 200 if wireguard_play_18_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_18_str_value\":*/\"ent_18_str_value\": \" {{ 'Success' if wireguard_play_18_status.rc == 0 else wireguard_play_18_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+        sed -i "s/^\"ent_18_status\":*/\"ent_18_status\": \" {{ wireguard_play_18_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    #- name: Play-100-19 Generate Playbook Report Task-19
+    #  shell: |
+    #    sed -i "s/^\"ent_19_int_value\":*/\"ent_19_int_value\": \" {{ 200 if wireguard_play_19_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_19_str_value\":*/\"ent_19_str_value\": \" {{ 'Success' if wireguard_play_19_status.rc == 0 else wireguard_play_19_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_19_status\":*/\"ent_19_status\": \" {{ wireguard_play_19_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    #- name: Play-100-20 Generate Playbook Report Task-20
+    #  shell: |
+    #    sed -i "s/^\"ent_20_int_value\":*/\"ent_20_int_value\": \" {{ 200 if wireguard_play_20_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_20_str_value\":*/\"ent_20_str_value\": \" {{ 'Success' if wireguard_play_20_status.rc == 0 else wireguard_play_20_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_20_status\":*/\"ent_20_status\": \" {{ wireguard_play_20_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    #- name: Play-100-21 Generate Playbook Report Task-21
+    #  shell: |
+    #    sed -i "s/^\"ent_21_int_value\":*/\"ent_21_int_value\": \" {{ 200 if wireguard_play_21_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_21_str_value\":*/\"ent_21_str_value\": \" {{ 'Success' if wireguard_play_21_status.rc == 0 else wireguard_play_21_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_21_status\":*/\"ent_21_status\": \" {{ wireguard_play_21_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+
+    #add entries
+    #- name: Play-100-22 Generate Playbook Report Task-22
+    #  shell: |
+    #    sed -i "s/^\"ent_22_int_value\":*/\"ent_22_int_value\": \" {{ 200 if wireguard_play_22_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_22_str_value\":*/\"ent_22_str_value\": \" {{ 'Success' if wireguard_play_22_status.rc == 0 else wireguard_play_22_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_22_status\":*/\"ent_22_status\": \" {{ wireguard_play_22_status.rc }}\"" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    #- name: Play-100-23 Generate Playbook Report Task-23
+    #  shell: |
+    #    sed -i "s/^\"ent_23_int_value\":*/\"ent_23_int_value\": \" {{ 200 if wireguard_play_23_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_23_str_value\":*/\"ent_23_str_value\": \" {{ 'Success' if wireguard_play_23_status.rc == 0 else wireguard_play_23_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_23_status\":*/\"ent_23_status\": \" {{ wireguard_play_23_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
+    
+    #add entries
+    #- name: Play-100-24 Generate Playbook Report Task-24
+    #  shell: |
+    #    sed -i "s/^\"ent_24_int_value\":*/\"ent_24_int_value\": \" {{ 200 if wireguard_play_24_status.rc == 0 else 400 }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_24_str_value\":*/\"ent_24_str_value\": \" {{ 'Success' if wireguard_play_24_status.rc == 0 else wireguard_play_24_status.stdout }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
+    #    sed -i "s/^\"ent_24_status\":*/\"ent_24_status\": \" {{ wireguard_play_24_status.rc }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json
