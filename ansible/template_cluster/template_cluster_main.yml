@@ -22,8 +22,8 @@
     #copy template report file
     - name: Play-00b Copy Template Playbook Report
       ansible.builtin.copy:
-        src: /home/{{ user }}/ansible/wireguard/files/template_report.json
-        dest: /home/{{ user }}/ansible/reports/wireguard_install.json
+        src: "/home/{{ user }}/ansible/{{ cluster_process }}/files/template_report.json"
+        dest: /home/{{ user }}/ansible/reports/{{ cluster_process }}_install.json
         owner: root
         group: root
         mode: '600'
@@ -32,11 +32,11 @@
     #editing entries for the report title block
     - name: "Play-00c Edit Report Title Block"
       shell: |
-        sed -i "s/^\"title\":*/\"title\": \"{{ cluster }} - {{ cluster_process }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"date_time\":*/\"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"gen_by\":*/\"gen_by\": \"Ansible\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"operator\":*/\"operator\": \"Ansible\"/" /home/{{ user }}/ansible/reports/wireguard_install.json && \
-        sed -i "s/^\"total_entries\":*/\"total_entries\": {{ cluster_plays }}/" /home/{{ user }}/ansible/reports/wireguard_install.json
+        sed -i "s/^\"title\":*/\"title\": \"{{ cluster }} - {{ cluster_process }}\"/" /home/{{ user }}/ansible/reports/{{ cluster_process }}_install.json && \
+        sed -i "s/^\"date_time\":*/\"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"/" /home/{{ user }}/ansible/reports/{{ cluster_process }}.json && \
+        sed -i "s/^\"gen_by\":*/\"gen_by\": \"Ansible\"/" /home/{{ user }}/ansible/reports/{{ cluster_process }}.json && \
+        sed -i "s/^\"operator\":*/\"operator\": \"Ansible\"/" /home/{{ user }}/ansible/reports/{{ cluster_process }}.json && \
+        sed -i "s/^\"total_entries\":*/\"total_entries\": {{ cluster_plays }}/" /home/{{ user }}/ansible/reports/{{ cluster_process }}.json
       register: play_00c_status
     
     ##
