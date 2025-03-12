@@ -1,0 +1,17 @@
+---
+# global variables
+user:
+deployment:
+deploy_process:
+ansible_pull_hosts:
+deploy_plays: #integer count of playbooks
+role01:
+role02:
+role03:
+role04:
+role05:
+role06:
+role07:
+role08:
+role09:
+role10:
