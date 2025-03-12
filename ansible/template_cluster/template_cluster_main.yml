@@ -4,6 +4,8 @@
   hosts: "{{ cluster_hosts }}"
   gather_facts: no
   become: yes
+  vars_files:
+    - template_cluster_variables.yml
   tasks:
     ##
     ## REPORT INITIATION BELOW HERE
