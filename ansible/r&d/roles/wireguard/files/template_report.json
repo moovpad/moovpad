@@ -1,0 +1,215 @@
+{
+    "title": "",
+    "date_time": "",
+    "gen_by": "",
+    "operator": "",
+    "total_entries": 0,
+    "entries":
+        {
+            "entry1":
+                {
+                    "ent_01_name": "",
+                    "ent_01_int_value": 0,
+                    "ent_01_str_value": "",
+                    "ent_01_status": "",
+                    "ent_01_timestamp": ""
+                },
+            "entry2":
+                {
+                    "ent_02_name": "",
+                    "ent_02_int_value": 0,
+                    "ent_02_str_value": "",
+                    "ent_02_status": "",
+                    "ent_02_timestamp": ""
+                },
+            "entry3":
+                {
+                    "ent_03_name": "",
+                    "ent_03_int_value": 0,
+                    "ent_03_str_value": "",
+                    "ent_03_status": "",
+                    "ent_03_timestamp": ""
+                },
+            "entry4":
+                {
+                    "ent_04_name": "",
+                    "ent_04_int_value": 0,
+                    "ent_04_str_value": "",
+                    "ent_04_status": "",
+                    "ent_04_timestamp": ""
+                },
+            "entry5":
+                {
+                    "ent_05_name": "",
+                    "ent_05_int_value": 0,
+                    "ent_05_str_value": "",
+                    "ent_05_status": "",
+                    "ent_05_timestamp": ""
+                },
+            "entry6":
+                {
+                    "ent_06_name": "",
+                    "ent_06_int_value": 0,
+                    "ent_06_str_value": "",
+                    "ent_06_status": "",
+                    "ent_06_timestamp": ""
+                },
+            "entry7":
+                {
+                    "ent_07_name": "",
+                    "ent_07_int_value": 0,
+                    "ent_07_str_value": "",
+                    "ent_07_status": "",
+                    "ent_07_timestamp": ""
+                },
+            "entry8":
+                {
+                    "ent_08_name": "",
+                    "ent_08_int_value": 0,
+                    "ent_08_str_value": "",
+                    "ent_08_status": "",
+                    "ent_08_timestamp": ""
+                },
+            "entry9":
+                {
+                    "ent_09_name": "",
+                    "ent_09_int_value": 0,
+                    "ent_09_str_value": "",
+                    "ent_09_status": "",
+                    "ent_09_timestamp": ""
+                },
+            "entry10":
+                {
+                    "ent_10_name": "",
+                    "ent_10_int_value": 0,
+                    "ent_10_str_value": "",
+                    "ent_10_status": "",
+                    "ent_10_timestamp": ""
+                },
+            "entry11":
+                {
+                    "ent_11_name": "",
+                    "ent_11_int_value": 0,
+                    "ent_11_str_value": "",
+                    "ent_11_status": "",
+                    "ent_11_timestamp": ""
+                },
+            "entry12":
+                {
+                    "ent_12_name": "",
+                    "ent_12_int_value": 0,
+                    "ent_12_str_value": "",
+                    "ent_12_status": "",
+                    "ent_12_timestamp": ""
+                },
+            "entry13":
+                {
+                    "ent_13_name": "",
+                    "ent_13_int_value": 0,
+                    "ent_13_str_value": "",
+                    "ent_13_status": "",
+                    "ent_13_timestamp": ""
+                },
+            "entry14":
+                {
+                    "ent_14_name": "",
+                    "ent_14_int_value": 0,
+                    "ent_14_str_value": "",
+                    "ent_14_status": "",
+                    "ent_14_timestamp": ""
+                },
+            "entry15":
+                {
+                    "ent_15_name": "",
+                    "ent_15_int_value": 0,
+                    "ent_15_str_value": "",
+                    "ent_15_status": "",
+                    "ent_15_timestamp": ""
+                },
+            "entry16":
+                {
+                    "ent_16_name": "",
+                    "ent_16_int_value": 0,
+                    "ent_16_str_value": "",
+                    "ent_16_status": "",
+                    "ent_16_timestamp": ""
+                },
+            "entry17":
+                {
+                    "ent_17_name": "",
+                    "ent_17_int_value": 0,
+                    "ent_17_str_value": "",
+                    "ent_17_status": "",
+                    "ent_17_timestamp": ""
+                },
+            "entry18":
+                {
+                    "ent_18_name": "",
+                    "ent_18_int_value": 0,
+                    "ent_18_str_value": "",
+                    "ent_18_status": "",
+                    "ent_18_timestamp": ""
+                },
+            "entry19":
+                {
+                    "ent_19_name": "",
+                    "ent_19_int_value": 0,
+                    "ent_19_str_value": "",
+                    "ent_19_status": "",
+                    "ent_19_timestamp": ""
+                },
+            "entry20":
+                {
+                    "ent_20_name": "",
+                    "ent_20_int_value": 0,
+                    "ent_20_str_value": "",
+                    "ent_20_status": "",
+                    "ent_20_timestamp": ""
+                },
+            "entry21":
+                {
+                    "ent_21_name": "",
+                    "ent_21_int_value": 0,
+                    "ent_21_str_value": "",
+                    "ent_21_status": "",
+                    "ent_21_timestamp": ""
+                },
+            "entry22":
+                {
+                    "ent_22_name": "",
+                    "ent_22_int_value": 0,
+                    "ent_22_str_value": "",
+                    "ent_22_status": "",
+                    "ent_22_timestamp": ""
+                },
+            "entry23":
+                {
+                    "ent_23_name": "",
+                    "ent_23_int_value": 0,
+                    "ent_23_str_value": "",
+                    "ent_23_status": "",
+                    "ent_23_timestamp": ""
+                },
+            "entry24":
+                {
+                    "ent_24_name": "",
+                    "ent_24_int_value": 0,
+                    "ent_24_str_value": "",
+                    "ent_24_status": "",
+                    "ent_24_timestamp": ""
+                },
+            "entry25":
+                {
+                    "ent_25_name": "",
+                    "ent_25_int_value": 0,
+                    "ent_25_str_value": "",
+                    "ent_25_status": "",
+                    "ent_25_timestamp": ""
+                }
+        },
+    "conclusion":
+        {
+
+        }
+    
+}

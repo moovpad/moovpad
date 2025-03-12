@@ -94,7 +94,7 @@
       register: play_10_status
 
     ##
-    ## CLUSTER-LEVEL PLAYBOOKS BELOW HERE 
+    ## REPORT DATA ENTRY BELOW HERE
     ##
 
     #add entries
