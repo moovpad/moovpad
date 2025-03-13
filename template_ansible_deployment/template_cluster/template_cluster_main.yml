@@ -34,7 +34,7 @@
     #editing entries for the report title block
     - name: "Play-00c Edit Report Title Block"
       shell: |
-        sed -i "s/^\"title\":*/\"title\": \"{{ cluster }} - {{ cluster_process }}\"/" /home/{{ user }}/ansible/reports/{{ cluster_process }}_install.json && \
+        sed -i "s/^\"title\":*/\"title\": \"{{ cluster }} - {{ cluster_process }}\"/" /home/{{ user }}/ansible/reports/{{ cluster_process }}.json && \
         sed -i "s/^\"date_time\":*/\"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"/" /home/{{ user }}/ansible/reports/{{ cluster_process }}.json && \
         sed -i "s/^\"gen_by\":*/\"gen_by\": \"Ansible\"/" /home/{{ user }}/ansible/reports/{{ cluster_process }}.json && \
         sed -i "s/^\"operator\":*/\"operator\": \"Ansible\"/" /home/{{ user }}/ansible/reports/{{ cluster_process }}.json && \

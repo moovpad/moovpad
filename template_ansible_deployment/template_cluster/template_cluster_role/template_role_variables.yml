@@ -5,6 +5,7 @@ user:
 role:
 role_process:
 role_hosts:
+tags:
 role_plays: #integer count of playbooks
 playbook01:
 playbook02:

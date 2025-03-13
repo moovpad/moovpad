@@ -25,16 +25,16 @@
     - name: Play-00b Copy Template Playbook Report
       ansible.builtin.copy:
         src: "/home/{{ user }}/ansible/{{ role_process }}/files/template_report.json"
-        dest: /home/{{ user }}/ansible/reports/{{ role_process }}_install.json
-        owner: root
-        group: root
+        dest: /home/{{ user }}/ansible/reports/{{ role_process }}.json
+        owner: "{{ user }}"
+        group: "{{ user }}"
         mode: '600'
       register: play_00b_status
     
     #editing entries for the report title block
     - name: "Play-00c Edit Report Title Block"
       shell: |
-        sed -i "s/^\"title\":*/\"title\": \"{{ role }} - {{ role_process }}\"/" /home/{{ user }}/ansible/reports/{{ role_process }}_install.json && \
+        sed -i "s/^\"title\":*/\"title\": \"{{ role }} - {{ role_process }}\"/" /home/{{ user }}/ansible/reports/{{ role_process }}.json && \
         sed -i "s/^\"date_time\":*/\"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"/" /home/{{ user }}/ansible/reports/{{ role_process }}.json && \
         sed -i "s/^\"gen_by\":*/\"gen_by\": \"Ansible\"/" /home/{{ user }}/ansible/reports/{{ role_process }}.json && \
         sed -i "s/^\"operator\":*/\"operator\": \"Ansible\"/" /home/{{ user }}/ansible/reports/{{ role_process }}.json && \
@@ -42,7 +42,7 @@
       register: play_00c_status
     
     ##
-    ## ROLE-LEVEL PLAYBOOKS BELOW HERE 
+    ## ROLE-LEVEL PLAYBOOKS/PLAYS BELOW HERE 
     ##
 
     #playbook 1

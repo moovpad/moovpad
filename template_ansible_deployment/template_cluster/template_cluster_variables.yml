@@ -5,6 +5,7 @@ user:
 cluster:
 cluster_process:
 cluster_hosts:
+tags:
 cluster_plays: #integer count of playbooks
 role01:
 role02:
