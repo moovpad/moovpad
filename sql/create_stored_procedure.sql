@@ -82,8 +82,6 @@ BEGIN
         PRINT 'ERROR CODE: ' + CAST (ERROR_MESSAGE() AS NVARCHAR);
         PRINT '============================================================================';
     END CATCH
-    SET @procedure_end = GETDATE();
-
 END
 
 
