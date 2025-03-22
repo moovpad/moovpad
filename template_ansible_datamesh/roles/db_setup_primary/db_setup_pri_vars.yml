@@ -1,0 +1,36 @@
+---
+
+# global variables
+user:
+role:
+role_process:
+role_hosts:
+tags:
+role_plays: #integer count of playbooks
+playbook01:
+playbook02:
+playbook03:
+playbook04:
+playbook05:
+playbook06:
+playbook07:
+playbook08:
+playbook09:
+playbook10:
+playbook11:
+playbook12:
+playbook13:
+playbook14:
+playbook15:
+playbook16:
+playbook17:
+playbook18:
+playbook19:
+playbook20:
+playbook21:
+playbook22:
+playbook23:
+playbook24:
+playbook25:
+
+# additional variables (if any)

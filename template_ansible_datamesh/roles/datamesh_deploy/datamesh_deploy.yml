@@ -1,0 +1,325 @@
+---
+
+- name: "{{ role }} - {{ role_process }}"
+  hosts: "{{ role_hosts }}"
+  gather_facts: no
+  become: yes
+  vars_files:
+    - template_role_variables.yml
+  tasks:
+    ##
+    ## REPORT INITIATION BELOW HERE
+    ##
+    
+    #create directory
+    - name: Play-00a Create Reports Directory
+      ignore_errors: yes
+      shell: |
+        mkdir /home/{{ user }}/ansible/reports && \
+        chmod 600 /home/{{ user }}/ansible/reports && \
+        chown {{ user }} /home/emh/ansible/reports && \
+        chgrp {{ user }} /home/emh/ansible/reports
+      register: play_00a_status
+
+    #copy template report file
+    - name: Play-00b Copy Template Playbook Report
+      ansible.builtin.copy:
+        src: "/home/{{ user }}/ansible/{{ role_process }}/files/template_report.json"
+        dest: /home/{{ user }}/ansible/reports/{{ role_process }}.json
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: '600'
+      register: play_00b_status
+    
+    #editing entries for the report title block
+    - name: "Play-00c Edit Report Title Block"
+      shell: |
+        sed -i "s/^\"title\":*/\"title\": \"{{ role }} - {{ role_process }}\"/" /home/{{ user }}/ansible/reports/{{ role_process }}.json && \
+        sed -i "s/^\"date_time\":*/\"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"/" /home/{{ user }}/ansible/reports/{{ role_process }}.json && \
+        sed -i "s/^\"gen_by\":*/\"gen_by\": \"Ansible\"/" /home/{{ user }}/ansible/reports/{{ role_process }}.json && \
+        sed -i "s/^\"operator\":*/\"operator\": \"Ansible\"/" /home/{{ user }}/ansible/reports/{{ role_process }}.json && \
+        sed -i "s/^\"total_entries\":*/\"total_entries\": {{ role_plays }}/" /home/{{ user }}/ansible/reports/{{ role_process }}.json
+      register: play_00c_status
+    
+    ##
+    ## ROLE-LEVEL PLAYBOOKS/PLAYS BELOW HERE 
+    ##
+
+    #playbook 1
+    - name: "{{ playbook01 }} Play-01"
+      ansible.builtin.include_tasks: "{{ playbook01 }}.yaml"
+      register: play_01_status
+    
+    #playbook 2
+    - name: "{{ playbook02 }} Play-02"
+      ansible.builtin.include_tasks: "{{ playbook02 }}.yaml"
+      register: play_02_status
+    
+    #playbook 3
+    - name: "{{ playbook03 }} Play-03"
+      ansible.builtin.include_tasks: "{{ playbook03 }}.yaml"
+      register: play_03_status
+    
+    #playbook 4
+    - name: "{{ playbook04 }} Play-04"
+      ansible.builtin.include_tasks: "{{ playbook04 }}.yaml"
+      register: play_04_status
+    
+    #playbook 5
+    - name: "{{ playbook05 }} Play-05"
+      ansible.builtin.include_tasks: "{{ playbook05 }}.yaml"
+      register: play_05_status
+    
+    #playbook 6
+    - name: "{{ playbook06 }} Play-06"
+      ansible.builtin.include_tasks: "{{ playbook06 }}.yaml"
+      register: play_06_status
+    
+    #playbook 7
+    - name: "{{ playbook07 }} Play-07"
+      ansible.builtin.include_tasks: "{{ playbook07 }}.yaml"
+      register: play_07_status
+    
+    #playbook 8
+    - name: "{{ playbook08 }} Play-08"
+      ansible.builtin.include_tasks: "{{ playbook08 }}.yaml"
+      register: play_08_status
+    
+    #playbook 9
+    - name: "{{ playbook09 }} Play-09"
+      ansible.builtin.include_tasks: "{{ playbook09 }}.yaml"
+      register: play_09_status
+    
+    #playbook 10
+    - name: "{{ playbook10 }} Play-10"
+      ansible.builtin.include_tasks: "{{ playbook10 }}.yaml"
+      register: play_10_status
+    
+    #playbook 11
+    - name: "{{ playbook11 }} Play-11"
+      ansible.builtin.include_tasks: "{{ playbook11 }}.yaml"
+      register: play_11_status
+    
+    #playbook 12
+    - name: "{{ playbook12 }} Play-12"
+      ansible.builtin.include_tasks: "{{ playbook12 }}.yaml"
+      register: play_12_status
+    
+    #playbook 13
+    - name: "{{ playbook13 }} Play-13"
+      ansible.builtin.include_tasks: "{{ playbook13 }}.yaml"
+      register: play_13_status
+    
+    #playbook 14
+    - name: "{{ playbook14 }} Play-14"
+      ansible.builtin.include_tasks: "{{ playbook14 }}.yaml"
+      register: play_14_status
+    
+    #playbook 15
+    - name: "{{ playbook15 }} Play-15"
+      ansible.builtin.include_tasks: "{{ playbook15 }}.yaml"
+      register: play_15_status
+    
+    #playbook 16
+    - name: "{{ playbook16 }} Play-16"
+      ansible.builtin.include_tasks: "{{ playbook16 }}.yaml"
+      register: play_16_status
+    
+    #playbook 17
+    - name: "{{ playbook17 }} Play-17"
+      ansible.builtin.include_tasks: "{{ playbook17 }}.yaml"
+      register: play_17_status
+    
+    #playbook 18
+    - name: "{{ playbook18 }} Play-18"
+      ansible.builtin.include_tasks: "{{ playbook18 }}.yaml"
+      register: play_18_status
+    
+    #playbook 19
+    - name: "{{ playbook19 }} Play-19"
+      ansible.builtin.include_tasks: "{{ playbook19 }}.yaml"
+      register: play_19_status
+    
+    #playbook 20
+    - name: "{{ playbook20 }} Play-20"
+      ansible.builtin.include_tasks: "{{ playbook20 }}.yaml"
+      register: play_20_status
+    
+    #playbook 21
+    - name: "{{ playbook21 }} Play-21"
+      ansible.builtin.include_tasks: "{{ playbook21 }}.yaml"
+      register: play_21_status
+    
+    #playbook 22
+    - name: "{{ playbook12 }} Play-22"
+      ansible.builtin.include_tasks: "{{ playbook22 }}.yaml"
+      register: play_22_status
+    
+    #playbook 23
+    - name: "{{ playbook23 }} Play-23"
+      ansible.builtin.include_tasks: "{{ playbook23 }}.yaml"
+      register: play_23_status
+    
+    #playbook 24
+    - name: "{{ playbook24 }} Play-24"
+      ansible.builtin.include_tasks: "{{ playbook24 }}.yaml"
+      register: play_24_status
+    
+    #playbook 25
+    - name: "{{ playbook25 }} Play-25"
+      ansible.builtin.include_tasks: "{{ playbook25 }}.yaml"
+      register: play_25_status
+
+    ##
+    ## REPORT DATA ENTRY BELOW HERE
+    ##
+
+    #add entries
+    - name: Play-100-01 Generate Playbook Report Task-01
+      shell: |
+        sed -i "s/^\"ent_01_int_value\":*/\"ent_01_int_value\": \" {{ play_01_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_01_str_value\":*/\"ent_01_str_value\": \" {{ play_01_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-02 Generate Playbook Report Task-02
+      shell: |
+        sed -i "s/^\"ent_02_int_value\":*/\"ent_02_int_value\": \" {{ play_02_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_02_str_value\":*/\"ent_02_str_value\": \" {{ play_02_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-03 Generate Playbook Report Task-03
+      shell: |
+        sed -i "s/^\"ent_03_int_value\":*/\"ent_03_int_value\": \" {{ play_03_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_03_str_value\":*/\"ent_03_str_value\": \" {{ play_03_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-04 Generate Playbook Report Task-04
+      shell: |
+        sed -i "s/^\"ent_04_int_value\":*/\"ent_04_int_value\": \" {{ play_04_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_04_str_value\":*/\"ent_04_str_value\": \" {{ play_04_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-05 Generate Playbook Report Task-05
+      shell: |
+        sed -i "s/^\"ent_05_int_value\":*/\"ent_05_int_value\": \" {{ play_05_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_05_str_value\":*/\"ent_05_str_value\": \" {{ play_05_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+
+    #add entries
+    - name: Play-100-06 Generate Playbook Report Task-06
+      shell: |
+        sed -i "s/^\"ent_06_int_value\":*/\"ent_06_int_value\": \" {{ play_06_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_06_str_value\":*/\"ent_06_str_value\": \" {{ play_06_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-07 Generate Playbook Report Task-07
+      shell: |
+        sed -i "s/^\"ent_07_int_value\":*/\"ent_07_int_value\": \" {{ play_07_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_07_str_value\":*/\"ent_07_str_value\": \" {{ play_07_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-08 Generate Playbook Report Task-08
+      shell: |
+        sed -i "s/^\"ent_08_int_value\":*/\"ent_08_int_value\": \" {{ play_08_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_08_str_value\":*/\"ent_08_str_value\": \" {{ play_08_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-09 Generate Playbook Report Task-09
+      shell: |
+        sed -i "s/^\"ent_09_int_value\":*/\"ent_09_int_value\": \" {{ play_09_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_09_str_value\":*/\"ent_09_str_value\": \" {{ play_09_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-10 Generate Playbook Report Task-10
+      shell: |
+        sed -i "s/^\"ent_10_int_value\":*/\"ent_10_int_value\": \" {{ play_10_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_10_str_value\":*/\"ent_10_str_value\": \" {{ play_10_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-11 Generate Playbook Report Task-11
+      shell: |
+        sed -i "s/^\"ent_11_int_value\":*/\"ent_11_int_value\": \" {{ play_11_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_11_str_value\":*/\"ent_11_str_value\": \" {{ play_11_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-12 Generate Playbook Report Task-12
+      shell: |
+        sed -i "s/^\"ent_12_int_value\":*/\"ent_12_int_value\": \" {{ play_12_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_12_str_value\":*/\"ent_12_str_value\": \" {{ play_12_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-13 Generate Playbook Report Task-13
+      shell: |
+        sed -i "s/^\"ent_13_int_value\":*/\"ent_13_int_value\": \" {{ play_13_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_13_str_value\":*/\"ent_13_str_value\": \" {{ play_13_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-14 Generate Playbook Report Task-14
+      shell: |
+        sed -i "s/^\"ent_14_int_value\":*/\"ent_14_int_value\": \" {{ play_14_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_14_str_value\":*/\"ent_14_str_value\": \" {{ play_14_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-15 Generate Playbook Report Task-15
+      shell: |
+        sed -i "s/^\"ent_15_int_value\":*/\"ent_15_int_value\": \" {{ play_15_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_15_str_value\":*/\"ent_15_str_value\": \" {{ play_15_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+
+    #add entries
+    - name: Play-100-16 Generate Playbook Report Task-16
+      shell: |
+        sed -i "s/^\"ent_16_int_value\":*/\"ent_16_int_value\": \" {{ play_16_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_16_str_value\":*/\"ent_16_str_value\": \" {{ play_16_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-17 Generate Playbook Report Task-17
+      shell: |
+        sed -i "s/^\"ent_17_int_value\":*/\"ent_17_int_value\": \" {{ play_17_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_17_str_value\":*/\"ent_17_str_value\": \" {{ play_17_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-18 Generate Playbook Report Task-18
+      shell: |
+        sed -i "s/^\"ent_18_int_value\":*/\"ent_18_int_value\": \" {{ play_18_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_18_str_value\":*/\"ent_18_str_value\": \" {{ play_18_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-19 Generate Playbook Report Task-19
+      shell: |
+        sed -i "s/^\"ent_19_int_value\":*/\"ent_19_int_value\": \" {{ play_19_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_19_str_value\":*/\"ent_19_str_value\": \" {{ play_19_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-20 Generate Playbook Report Task-20
+      shell: |
+        sed -i "s/^\"ent_20_int_value\":*/\"ent_20_int_value\": \" {{ play_20_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_20_str_value\":*/\"ent_20_str_value\": \" {{ play_20_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-21 Generate Playbook Report Task-21
+      shell: |
+        sed -i "s/^\"ent_21_int_value\":*/\"ent_21_int_value\": \" {{ play_21_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_21_str_value\":*/\"ent_21_str_value\": \" {{ play_21_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-22 Generate Playbook Report Task-22
+      shell: |
+        sed -i "s/^\"ent_22_int_value\":*/\"ent_22_int_value\": \" {{ play_22_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_22_str_value\":*/\"ent_22_str_value\": \" {{ play_22_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-23 Generate Playbook Report Task-23
+      shell: |
+        sed -i "s/^\"ent_23_int_value\":*/\"ent_23_int_value\": \" {{ play_23_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_23_str_value\":*/\"ent_23_str_value\": \" {{ play_23_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-24 Generate Playbook Report Task-24
+      shell: |
+        sed -i "s/^\"ent_24_int_value\":*/\"ent_24_int_value\": \" {{ play_24_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_24_str_value\":*/\"ent_24_str_value\": \" {{ play_24_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
+    
+    #add entries
+    - name: Play-100-25 Generate Playbook Report Task-25
+      shell: |
+        sed -i "s/^\"ent_25_int_value\":*/\"ent_25_int_value\": \" {{ play_25_status.rc }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json && \
+        sed -i "s/^\"ent_25_str_value\":*/\"ent_25_str_value\": \" {{ play_25_status.stdout }}\"/" /home/{{ user }}/ansible/reports/{{role_process}}.json
