@@ -22,7 +22,8 @@ CREATE DATABASE
 WHERE NOT EXISTS (SELECT FROM pg_databse 
 WHERE datname = 
 2{ db_name });
-GRANT ALL PRIVILEGES ON DATABASE 
-3{ db_name } TO 
-4{ user_name };
+GRANT 
+3{ user_priveleges } ON DATABASE 
+4{ db_name } TO 
+5{ user_name };
 GO
