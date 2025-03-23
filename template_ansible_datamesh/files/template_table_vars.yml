@@ -1,0 +1,34 @@
+table_name:
+table_auth:
+table_user:
+table_desc:
+col_def_01:
+col_def_02:
+col_def_03:
+col_def_04:
+col_def_05:
+col_def_06:
+col_def_07:
+col_def_08:
+col_def_09:
+col_def_10:
+col_def_11:
+col_def_12:
+col_def_13:
+col_def_14:
+col_def_15:
+col_def_16:
+col_def_17:
+col_def_18:
+col_def_19:
+col_def_20:
+col_def_21:
+col_def_22:
+col_def_23:
+col_def_34:
+col_def_35:
+
+# The purpose of this variables file is to simplify the definition of datamesh object specification,
+# making it possible for personnel other than data engineers to more easily communicate system requirements.
+# In conjunction with the template SQL object files, these together should standardise datamesh design,
+# development and deployment, as well as integrating well within CI/CD pipelines for server-side devsecops.

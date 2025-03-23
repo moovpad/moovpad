@@ -1,0 +1,19 @@
+schema_name:
+table_name:
+table_cols:
+col01_statement:
+col02_statement:
+col03_statement:
+col04_statement:
+col05_statement:
+col06_statement:
+col07_statement:
+col08_statement:
+col09_statement:
+col10_statement:
+table_statement:
+
+# The purpose of this variables file is to simplify the definition of datamesh object specification,
+# making it possible for personnel other than data engineers to more easily communicate system requirements.
+# In conjunction with the template SQL object files, these together should standardise datamesh design,
+# development and deployment, as well as integrating well within CI/CD pipelines for server-side devsecops.

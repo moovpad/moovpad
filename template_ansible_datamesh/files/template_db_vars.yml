@@ -1,0 +1,8 @@
+db_name:
+user_priveleges:
+user_name:
+
+# The purpose of this variables file is to simplify the definition of datamesh object specification,
+# making it possible for personnel other than data engineers to more easily communicate system requirements.
+# In conjunction with the template SQL object files, these together should standardise datamesh design,
+# development and deployment, as well as integrating well within CI/CD pipelines for server-side devsecops.
