@@ -16,7 +16,7 @@ https://github.com/moovpad/moovpad/discussions/categories/learn-test-fumble-fix-
 
 ## SCIENTIFIC FRAMEWORK AT THE CORE
 
-It's difficult to understand the real need for, and driving reasons, the development of the MOOVPAD auite of apps without considering why the science at their core is so important. So a separate section has been setup in the Discussions to address these topics briefly, and can be found at this link:
+It's difficult to understand the real need for, and driving reasons behind, the development of the MOOVPAD auite of apps without considering why the science at their core is so important. So a separate section has been setup in the Discussions to address these topics briefly, and can be found at this link:
 
 https://github.com/moovpad/moovpad/discussions/categories/scientific-framework
 
