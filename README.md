@@ -8,6 +8,12 @@ Without going into too much detail here, suffice it to say that a gap in the est
 
 Below are alinks to some of the main parts of the Discussion section, which is being used to provide ongoing updates on the project as work progresses.
 
+## WRAP-UP OF 2025 PROGRESS
+
+Because there's been a lot of progress made during the year, and the development of some new approaches to some key areas of the project, an overview of these results can be found here in summary form:
+
+https://github.com/moovpad/moovpad/discussions/152
+
 ## DEV LEARNING & TRAINING
 
 Probably the first thing worth mentioning in terms of the MOOVPAD project development is the fact that the learning required to reach this stage has been quite intense (especially when considered alongside a full time work schedule), and that this learning is an ongoing, purposeful focus for the main developer and any future team members. A separate section of Discussions relating to some of this learning has been set up here:
