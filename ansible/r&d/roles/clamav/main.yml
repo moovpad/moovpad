@@ -1,3 +1,0 @@
----
-
-- import_playbook: tasks/clamav_install.yml

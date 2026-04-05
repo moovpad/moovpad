@@ -1,0 +1,17 @@
+---
+# Role/node-level variables.
+user: emh
+role: template_role_v2
+role_process: template_role_v2
+role_hosts: localhost
+tags: all
+role_plays: 5
+
+# Node actions are intentionally simple placeholders so teams can replace them
+# with real tasks while preserving report wiring and structure.
+node_task_names:
+  - node-precheck
+  - node-packages
+  - node-configure
+  - node-health-check
+  - node-post-report

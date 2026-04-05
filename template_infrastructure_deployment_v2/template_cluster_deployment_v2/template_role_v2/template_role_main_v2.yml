@@ -1,0 +1,59 @@
+---
+- name: "{{ role }} - {{ role_process }}"
+  hosts: "{{ role_hosts }}"
+  gather_facts: false
+  become: true
+  vars_files:
+    - template_role_variables_v2.yml
+  vars:
+    report_dir: "/home/{{ user }}/ansible/reports"
+    report_file: "{{ report_dir }}/{{ role_process }}.json"
+  tasks:
+    # Create reports directory before generating role-level report output.
+    - name: Play-00a Create role reports directory
+      ansible.builtin.file:
+        path: "{{ report_dir }}"
+        state: directory
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: "0700"
+      register: play_00a_status
+
+    # Copy role-level report template for this execution.
+    - name: Play-00b Copy role report template
+      ansible.builtin.copy:
+        src: template_report.json
+        dest: "{{ report_file }}"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: "0600"
+      register: play_00b_status
+
+    # Fill metadata fields so report consumers can index this run.
+    - name: Play-00c Update role report title block
+      ansible.builtin.shell: |
+        sed -i "s/^    \"title\":.*/    \"title\": \"{{ role }} - {{ role_process }}\",/" {{ report_file }} && \
+        sed -i "s/^    \"date_time\":.*/    \"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\",/" {{ report_file }} && \
+        sed -i "s/^    \"gen_by\":.*/    \"gen_by\": \"Ansible\",/" {{ report_file }} && \
+        sed -i "s/^    \"operator\":.*/    \"operator\": \"Ansible\",/" {{ report_file }} && \
+        sed -i "s/^    \"total_entries\":.*/    \"total_entries\": {{ role_plays }},/" {{ report_file }}
+      changed_when: true
+      register: play_00c_status
+
+    # Simulate node-level actions; replace this command with real node tasks later.
+    - name: Play-01..05 Execute node placeholder tasks
+      ansible.builtin.shell: "echo Executed {{ item }}"
+      loop: "{{ node_task_names }}"
+      register: node_task_results
+      changed_when: true
+
+    # Capture first node task execution outcome in report entry 1.
+    - name: Play-100-01 Generate role report entry
+      ansible.builtin.shell: |
+        sed -i "s/^                    \"ent_01_name\":.*/                    \"ent_01_name\": \"{{ node_task_names[0] }}\",/" {{ report_file }} && \
+        sed -i "s/^                    \"ent_01_int_value\":.*/                    \"ent_01_int_value\": {{ node_task_results.results[0].rc | default(0) }},/" {{ report_file }} && \
+        sed -i "s/^                    \"ent_01_str_value\":.*/                    \"ent_01_str_value\": \"{{ node_task_results.results[0].stdout | default('ok') | regex_replace('"', '\\\\"') }}\",/" {{ report_file }} && \
+        sed -i "s/^                    \"ent_01_status\":.*/                    \"ent_01_status\": \"{{ 'ok' if (node_task_results.results[0].rc | default(0)) == 0 else 'fail' }}\",/" {{ report_file }} && \
+        sed -i "s/^                    \"ent_01_timestamp\":.*/                    \"ent_01_timestamp\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"/" {{ report_file }}
+      changed_when: true
+      register: play_100_01_status

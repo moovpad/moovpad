@@ -1,0 +1,13 @@
+---
+# Infrastructure-level variables that control the top-level deployment flow.
+user: emh
+deployment: template_infrastructure_deployment_v2
+deploy_process: template_infrastructure_deployment_v2
+ansible_pull_hosts: localhost
+tags: all
+
+# Number of report entries expected at this level.
+deploy_plays: 1
+
+# Child cluster template path (relative to this playbook).
+cluster_playbook: template_cluster_deployment_v2/template_cluster_main_v2.yml

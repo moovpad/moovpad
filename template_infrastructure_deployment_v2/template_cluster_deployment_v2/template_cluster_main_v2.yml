@@ -1,0 +1,57 @@
+---
+- name: "{{ cluster }} - {{ cluster_process }}"
+  hosts: "{{ cluster_hosts }}"
+  gather_facts: false
+  become: true
+  vars_files:
+    - template_cluster_variables_v2.yml
+  vars:
+    report_dir: "/home/{{ user }}/ansible/reports"
+    report_file: "{{ report_dir }}/{{ cluster_process }}_install.json"
+  tasks:
+    # Create reports directory for cluster-level reporting artifacts.
+    - name: Play-00a Create cluster reports directory
+      ansible.builtin.file:
+        path: "{{ report_dir }}"
+        state: directory
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: "0700"
+      register: play_00a_status
+
+    # Copy the cluster report template to a deterministic output file.
+    - name: Play-00b Copy cluster report template
+      ansible.builtin.copy:
+        src: template_report.json
+        dest: "{{ report_file }}"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: "0600"
+      register: play_00b_status
+
+    # Fill report metadata before functional role-level work starts.
+    - name: Play-00c Update cluster report title block
+      ansible.builtin.shell: |
+        sed -i "s/^    \"title\":.*/    \"title\": \"{{ cluster }} - {{ cluster_process }}\",/" {{ report_file }} && \
+        sed -i "s/^    \"date_time\":.*/    \"date_time\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\",/" {{ report_file }} && \
+        sed -i "s/^    \"gen_by\":.*/    \"gen_by\": \"Ansible\",/" {{ report_file }} && \
+        sed -i "s/^    \"operator\":.*/    \"operator\": \"Ansible\",/" {{ report_file }} && \
+        sed -i "s/^    \"total_entries\":.*/    \"total_entries\": {{ cluster_plays }},/" {{ report_file }}
+      changed_when: true
+      register: play_00c_status
+
+    # Execute the role-level template to model node-level deployment behavior.
+    - name: Play-01 Execute role template
+      ansible.builtin.include_tasks: "{{ role_playbook }}"
+      register: play_01_status
+
+    # Record the child role execution result into entry 1.
+    - name: Play-100-01 Generate cluster report entry
+      ansible.builtin.shell: |
+        sed -i "s/^                    \"ent_01_name\":.*/                    \"ent_01_name\": \"role-template-execution\",/" {{ report_file }} && \
+        sed -i "s/^                    \"ent_01_int_value\":.*/                    \"ent_01_int_value\": {{ play_01_status.rc | default(0) }},/" {{ report_file }} && \
+        sed -i "s/^                    \"ent_01_str_value\":.*/                    \"ent_01_str_value\": \"{{ play_01_status.stdout | default('ok') | regex_replace('"', '\\\\"') }}\",/" {{ report_file }} && \
+        sed -i "s/^                    \"ent_01_status\":.*/                    \"ent_01_status\": \"{{ 'ok' if (play_01_status.rc | default(0)) == 0 else 'fail' }}\",/" {{ report_file }} && \
+        sed -i "s/^                    \"ent_01_timestamp\":.*/                    \"ent_01_timestamp\": \"{{ now(utc=true,fmt='%Y-%m-%d %H:%M:%S') }}\"/" {{ report_file }}
+      changed_when: true
+      register: play_100_01_status

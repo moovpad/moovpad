@@ -1,0 +1,54 @@
+{
+    "title": "",
+    "date_time": "",
+    "gen_by": "",
+    "operator": "",
+    "total_entries": 0,
+    "entries":
+        {
+            "entry1":
+                {
+                    "ent_01_name": "",
+                    "ent_01_int_value": 0,
+                    "ent_01_str_value": "",
+                    "ent_01_status": "",
+                    "ent_01_timestamp": ""
+                },
+            "entry2":
+                {
+                    "ent_02_name": "",
+                    "ent_02_int_value": 0,
+                    "ent_02_str_value": "",
+                    "ent_02_status": "",
+                    "ent_02_timestamp": ""
+                },
+            "entry3":
+                {
+                    "ent_03_name": "",
+                    "ent_03_int_value": 0,
+                    "ent_03_str_value": "",
+                    "ent_03_status": "",
+                    "ent_03_timestamp": ""
+                },
+            "entry4":
+                {
+                    "ent_04_name": "",
+                    "ent_04_int_value": 0,
+                    "ent_04_str_value": "",
+                    "ent_04_status": "",
+                    "ent_04_timestamp": ""
+                },
+            "entry5":
+                {
+                    "ent_05_name": "",
+                    "ent_05_int_value": 0,
+                    "ent_05_str_value": "",
+                    "ent_05_status": "",
+                    "ent_05_timestamp": ""
+                }
+        },
+    "conclusion":
+        {
+
+        }
+}

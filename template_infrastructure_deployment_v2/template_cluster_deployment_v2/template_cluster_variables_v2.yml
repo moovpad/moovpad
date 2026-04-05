@@ -1,0 +1,11 @@
+---
+# Cluster-level variables.
+user: emh
+cluster: template_cluster_deployment_v2
+cluster_process: template_cluster_deployment_v2
+cluster_hosts: localhost
+tags: all
+cluster_plays: 1
+
+# Child role template path (relative to the cluster playbook folder).
+role_playbook: template_role_v2/template_role_main_v2.yml

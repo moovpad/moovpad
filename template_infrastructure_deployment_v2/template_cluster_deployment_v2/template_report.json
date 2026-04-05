@@ -1,0 +1,22 @@
+{
+    "title": "",
+    "date_time": "",
+    "gen_by": "",
+    "operator": "",
+    "total_entries": 0,
+    "entries":
+        {
+            "entry1":
+                {
+                    "ent_01_name": "",
+                    "ent_01_int_value": 0,
+                    "ent_01_str_value": "",
+                    "ent_01_status": "",
+                    "ent_01_timestamp": ""
+                }
+        },
+    "conclusion":
+        {
+
+        }
+}
