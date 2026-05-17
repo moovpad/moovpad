@@ -8,9 +8,20 @@ Without going into too much detail here, suffice it to say that a gap in the est
 
 Below are alinks to some of the main parts of the Discussion section, which is being used to provide ongoing updates on the project as work progresses.
 
+## KORE-M > KORE-A > KORE-S
+The KORE architectural approach developed for MOOVPAD projects is designed to make initial project rollot and ongoing CI/CD more effective and efficient:
+
+https://github.com/moovpad/moovpad/discussions/188
+
+## ACHIEVEMENT HIGHLIGHTS 2026
+
+Although 2025 was quite busy, and some significant progress was made, 2026 has delivered considerably more in terms of project development milestones:
+
+https://github.com/moovpad/moovpad/discussions/157
+
 ## WRAP-UP OF 2025 PROGRESS
 
-Because there's been a lot of progress made during the year, and the development of some new approaches to some key areas of the project, an overview of these results can be found here in summary form:
+For a summary of progress made during 2025, and the development of some new approaches to some key areas of the project:
 
 https://github.com/moovpad/moovpad/discussions/152
 
