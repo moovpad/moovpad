@@ -77,7 +77,7 @@ https://github.com/moovpad/moovpad/discussions/categories/modules-plugins-booste
 
 ## FURTHER INFO
 
-Please see the Discussion section of this repo for app and server-side devlogs, as well as the blog section of the website (www.moovpad.com/blog) for those interested in the background science, and an archive of the development work between August 2021 and December 2024. 
+Please see the Discussion section of this repo for app and server-side devlogs, as well as the blog section of the website (www.moovpad.com) for those interested in the background science, and an archive of the development work between August 2021 and December 2024. 
 
 Any questions can be forwarded to info@moovpad.com or shared in the Discussion section here. 
 
